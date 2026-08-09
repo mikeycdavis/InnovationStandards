@@ -1,0 +1,9 @@
+# Minimal policy so `standards validate --dir=` produces a verdict for this fixture.
+standardVersion: "1.0.0"
+project: "Fixture"
+
+rules:
+  innovation.proposal-artifact:
+    level: required
+
+exceptions: []

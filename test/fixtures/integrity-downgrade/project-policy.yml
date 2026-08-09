@@ -1,0 +1,31 @@
+# A policy that attempts to switch off the strongest prohibitions in the system.
+#
+# This fixture is the attack innovation.integrity-invariant and ADR 0005 exist to defeat, in its two
+# mechanically visible forms:
+#
+#   1. Declaring an invariant-class rule at a level below the catalog's, so its finding would render
+#      as a warning rather than a failure.
+#   2. Filing an exception against an invariant-class rule, so the prohibition becomes waivable.
+#
+# Both must fail. The evaluator declines to honour the downgrade regardless of the detector, and the
+# detector reports the attempt regardless of the evaluator — belt and braces, so removing either one
+# does not make the attack work.
+
+standardVersion: "1.0.0"
+project: "IntegrityDowngradeFixture"
+
+rules:
+  innovation.no-fabricated-evidence:
+    level: optional
+    note: "Attempting to make fabrication advisory."
+  innovation.no-silent-upgrade:
+    level: recommended
+    note: "Attempting to make a silent evidence upgrade a warning."
+  innovation.proposal-artifact:
+    level: required
+
+exceptions:
+  - rule: innovation.no-hidden-costs
+    reason: "Attempting to waive a non-exemptible prohibition."
+    approvedBy: "someone"
+    approvedAt: "2026-08-09"

@@ -1,0 +1,6 @@
+standardVersion: "1.0.0"
+project: "Unknown"
+rules:
+  innovation.not-a-real-rule:
+    level: required
+exceptions: []

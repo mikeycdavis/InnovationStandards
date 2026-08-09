@@ -1,0 +1,22 @@
+{
+  "$comment": "CANONICAL ENUMERATION. Reviewed by a human against artifacts/prompts/innovation-standards-spec.md and committed as the source of truth for how many standards exist and what they are called. scripts/inventory.mjs extracts from the spec and compares against THIS FILE; it never regenerates it. A parser that becomes more or less forgiving cannot redefine the enumeration — it can only disagree with this file, and disagreeing fails. An entry gains its implementedBy path when the standard document lands; entries without one are enumerated but not yet implemented.",
+  "source": "artifacts/prompts/innovation-standards-spec.md",
+  "reviewedOn": "2026-08-09",
+  "expectedCount": 14,
+  "standards": [
+    { "number": 1, "title": "Problem Before Solution", "implementedBy": "standards/01-problem-before-solution.md" },
+    { "number": 2, "title": "Evidence Taxonomy and Integrity", "implementedBy": "standards/02-evidence-taxonomy-and-integrity.md" },
+    { "number": 3, "title": "Existing Capability and Alternatives", "implementedBy": "standards/03-existing-capability-and-alternatives.md" },
+    { "number": 4, "title": "Value and Strategic Alignment", "implementedBy": "standards/04-value-and-strategic-alignment.md" },
+    { "number": 5, "title": "Cost Accounting", "implementedBy": "standards/05-cost-accounting.md" },
+    { "number": 6, "title": "Security, Privacy, and Standards Non-Bypass", "implementedBy": "standards/06-security-privacy-and-standards-non-bypass.md" },
+    { "number": 7, "title": "Scope and MVP Discipline", "implementedBy": "standards/07-scope-and-mvp-discipline.md" },
+    { "number": 8, "title": "Success and Kill Criteria", "implementedBy": "standards/08-success-and-kill-criteria.md" },
+    { "number": 9, "title": "Experiment Before Build", "implementedBy": "standards/09-experiment-before-build.md" },
+    { "number": 10, "title": "Innovation Decision Model", "implementedBy": "standards/10-innovation-decision-model.md" },
+    { "number": 11, "title": "Portfolio Coherence and Prioritization", "implementedBy": "standards/11-portfolio-coherence-and-prioritization.md" },
+    { "number": 12, "title": "New-Project Justification", "implementedBy": "standards/12-new-project-justification.md" },
+    { "number": 13, "title": "Innovation Proposal Artifact", "implementedBy": "standards/13-innovation-proposal-artifact.md" },
+    { "number": 14, "title": "Standards Integrity", "implementedBy": "standards/14-standards-integrity.md" }
+  ]
+}

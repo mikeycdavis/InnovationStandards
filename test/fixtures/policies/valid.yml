@@ -1,0 +1,6 @@
+standardVersion: "1.0.0"
+project: "Valid"
+rules:
+  innovation.proposal-artifact:
+    level: required
+exceptions: []

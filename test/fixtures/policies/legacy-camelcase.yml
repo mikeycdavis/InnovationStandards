@@ -1,0 +1,6 @@
+standardVersion: "1.0.0"
+project: "Legacy"
+rules:
+  innovation.proposalArtifact:
+    level: required
+exceptions: []

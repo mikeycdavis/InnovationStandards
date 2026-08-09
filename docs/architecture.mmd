@@ -1,0 +1,45 @@
+flowchart TB
+    subgraph authored["Normative layer (authored, human-reviewed)"]
+        spec["artifacts/prompts/<br/>innovation-standards-spec.md<br/>numbered source of record"]
+        docs14["standards/01..14-*.md<br/>14 normative documents"]
+        rules["rules/innovation.json<br/>29 catalogued rules"]
+    end
+
+    subgraph gates["Integrity gates (CI, no verdict)"]
+        inventory["inventory.mjs<br/>enumeration has not drifted"]
+        fidelity["fidelity.mjs<br/>verbatim claims are verbatim"]
+        diagrams["diagrams.mjs<br/>derived copies match source"]
+    end
+
+    subgraph subject["Subject of evaluation"]
+        proposals["artifacts/innovation-proposals/<br/>NNNN-slug.md"]
+        policy["project-policy.yml<br/>levels, applicability,<br/>exceptions, attestations"]
+    end
+
+    subgraph engine["Evaluation engine"]
+        catalog["catalog.mjs<br/>rule identity + metadata"]
+        detectors["standards.mjs detectors<br/>parse proposals, emit findings"]
+        compliance["compliance.mjs<br/>findings + policy -> verdict"]
+    end
+
+    subgraph surface["Command surface"]
+        check["standards check<br/>one proposal, drafting loop"]
+        explain["standards explain<br/>why a rule applies"]
+        audit["standards audit<br/>evidence, no verdict"]
+        validate["standards validate<br/>the CI gate"]
+        init["standards init<br/>bootstrap, dry-run first"]
+    end
+
+    spec -->|"extracted and compared"| inventory
+    spec -->|"quoted blocks verified"| fidelity
+    docs14 -->|"each rule names a standard"| rules
+    rules --> catalog
+    proposals -->|"parsed at canonical path only"| detectors
+    catalog --> compliance
+    detectors -->|"findings, OBSERVED or INFERRED"| compliance
+    policy -->|"never redefines a rule"| compliance
+    compliance -->|"COMPLIANT / NON_COMPLIANT /<br/>NOT_EVALUATED / BLOCKED_BY_INVARIANT"| validate
+    detectors --> check
+    catalog --> explain
+    detectors --> audit
+    init -->|"same plan(), dry-run or apply"| proposals

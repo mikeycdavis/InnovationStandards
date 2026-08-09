@@ -1,0 +1,11 @@
+standardVersion: "1.0.0"
+project: "Expired"
+rules:
+  innovation.mvp-definition:
+    level: required
+exceptions:
+  - rule: innovation.mvp-definition
+    reason: "carried knowingly while the format settles"
+    approvedBy: "owner"
+    approvedAt: "2020-01-01"
+    expires: "2021-01-01"

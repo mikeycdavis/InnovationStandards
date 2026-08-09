@@ -1,0 +1,25 @@
+{
+  "name": "innovation-standards",
+  "version": "1.0.0",
+  "description": "Numbered innovation standards, and the commands that check an innovation proposal against them.",
+  "type": "module",
+  "bin": {
+    "standards": "scripts/standards.mjs"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "audit": "node scripts/standards.mjs audit .",
+    "validate": "node scripts/standards.mjs validate .",
+    "check": "node scripts/standards.mjs check --all",
+    "inventory": "node scripts/inventory.mjs",
+    "fidelity": "node scripts/fidelity.mjs",
+    "policy": "node scripts/policy.mjs",
+    "diagrams": "node scripts/diagrams.mjs",
+    "audit:strict": "node scripts/standards.mjs audit . --strict"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,121 @@
+# Project policy — <Project name>
+#
+# What this file is: the declaration of which innovation rules this project is held to, at what
+# level, what has no subject here, and what has been reviewed by a human.
+#
+# What this file is NOT: a place to make a failing rule go away. Four mechanisms exist and they are
+# not interchangeable —
+#
+#   failure        the rule applies and is not met. It stays visible as a failure.
+#   not-applicable the rule's SUBJECT does not exist here. Needs a reason and a revisit condition.
+#   exception      the rule applies, is unmet, and a named person approved carrying that knowingly.
+#   attestation    the rule applies, a human reviewed it, and it IS satisfied. Evidence, not a waiver.
+#
+# Declaring a rule not-applicable because it is failing is using the wrong mechanism, and the two are
+# deliberately kept apart so that the substitution is visible.
+#
+# Seven rules are invariant-class — forbidden and non-exemptible. You cannot waive them, and
+# declaring them at a lower level here does not lower them: the evaluator ignores the downgrade and
+# innovation.integrity-invariant reports the attempt.
+#
+# Shape: schemas/project-policy.schema.json.
+
+standardVersion: "1.0.0"
+project: "<Project name>"
+
+rules:
+  innovation.proposal-artifact:
+    level: required
+  innovation.problem-statement:
+    level: required
+  innovation.no-problem-no-build:
+    level: forbidden
+  innovation.evidence-labels:
+    level: required
+  innovation.evidence-citations:
+    level: required
+  innovation.no-silent-upgrade:
+    level: forbidden
+  innovation.no-fabricated-evidence:
+    level: forbidden
+  innovation.assumptions-declared:
+    level: required
+  innovation.novelty-not-value:
+    level: forbidden
+  innovation.existing-capability-analysis:
+    level: required
+  innovation.alternatives-considered:
+    level: required
+  innovation.value-articulation:
+    level: required
+  innovation.cost-accounting:
+    level: required
+  innovation.no-hidden-costs:
+    level: forbidden
+  innovation.security-privacy-review:
+    level: required
+  innovation.standards-non-bypass:
+    level: forbidden
+  innovation.scope-baseline:
+    level: required
+  innovation.mvp-definition:
+    level: required
+  innovation.no-silent-scope-change:
+    level: forbidden
+  innovation.success-criteria:
+    level: required
+  innovation.kill-criteria:
+    level: required
+  innovation.no-sunk-cost-continuation:
+    level: forbidden
+  innovation.experiment-before-build:
+    level: recommended
+  innovation.decision-recorded:
+    level: required
+  innovation.revisit-conditions:
+    level: required
+  innovation.brainstorm-not-roadmap:
+    level: forbidden
+  innovation.portfolio-overlap:
+    level: required
+  innovation.prioritization-discipline:
+    level: forbidden
+  innovation.new-project-justification:
+    level: required
+  innovation.integrity-invariant:
+    level: forbidden
+
+# Rules whose SUBJECT does not exist in this project. Each is a claim about THIS PROJECT rather than
+# about the rule, and it stops being true the moment the project changes — which is what
+# `revisitWhen` records. Delete this block if nothing qualifies.
+#
+# applicability:
+#   innovation.portfolio-overlap:
+#     status: not-applicable
+#     reason: "<why this project has no portfolio for a proposal to overlap with>"
+#     reviewedAt: "2026-01-01"
+#     revisitWhen: "<the event that makes this untrue — e.g. a second product ships>"
+
+# Approved, time-bounded waivers. An exception against an invariant-class rule is REJECTED rather
+# than honoured, and the rejection is itself a failure.
+exceptions: []
+
+# Recorded human judgement for rules the catalog says a human evaluates. Eight rules in this catalog
+# are manual-review with `none` assurance; without an attestation they report `not-evaluated`, which
+# means nobody looked — not that nothing was wrong.
+#
+# `evidence` must be a single line: the YAML parser supports a small subset and rejects block scalars
+# rather than guessing at them.
+#
+# attestations:
+#   innovation.no-fabricated-evidence:
+#     status: approved
+#     reviewedBy: "<name>"
+#     reviewedAt: "2026-01-01"
+#     evidence: "<what was examined, and what was found — an attestation without this is an assertion>"
+#     reviewedAgainst:
+#       paths:
+#         - artifacts/innovation-proposals/0001-<slug>.md
+#       # Printed by `standards validate` when absent. When the reviewed files change materially this
+#       # stops matching, the attestation goes stale, and the rule returns to not-evaluated.
+#       digest: "<32 hex characters>"

@@ -1,0 +1,4 @@
+standardVersion: 1
+project: "Bad"
+rules:
+  innovation.proposal-artifact: required

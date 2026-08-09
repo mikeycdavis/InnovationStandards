@@ -1,0 +1,172 @@
+# Project policy for the InnovationStandards repository itself.
+#
+# This is the dogfooded instance, and therefore the pattern every adopting project will copy —
+# including its mistakes. Four rules govern what may appear here:
+#
+#   * Rule IDs are canonical only. No camelCase; the schema rejects it.
+#   * `applicability` and `exceptions` are different mechanisms and never substitute for each other.
+#       not-applicable = the rule has no subject in this project.
+#       exception      = the rule applies and this project knowingly does not satisfy it.
+#   * An attestation is EVIDENCE, not a waiver. It never overrides an automated finding.
+#   * Nothing here asserts compliance. What this project actually meets is a validation result.
+#
+# Note what this policy does NOT contain: any level below the catalog's for an invariant-class rule.
+# Such a declaration would be reported by innovation.integrity-invariant and would be refused by the
+# evaluator anyway (ADR 0005). A prohibition a project can switch off is not a prohibition.
+#
+# Shape: schemas/project-policy.schema.json. Meaning: the standards in standards/.
+
+standardVersion: "1.0.0"
+project: "InnovationStandards"
+
+rules:
+  innovation.proposal-artifact:
+    level: required
+  innovation.problem-statement:
+    level: required
+  innovation.no-problem-no-build:
+    level: forbidden
+  innovation.evidence-labels:
+    level: required
+  innovation.evidence-citations:
+    level: required
+  innovation.no-silent-upgrade:
+    level: forbidden
+  innovation.no-fabricated-evidence:
+    level: forbidden
+  innovation.assumptions-declared:
+    level: required
+  innovation.novelty-not-value:
+    level: forbidden
+  innovation.existing-capability-analysis:
+    level: required
+  innovation.alternatives-considered:
+    level: required
+  innovation.value-articulation:
+    level: required
+  innovation.cost-accounting:
+    level: required
+  innovation.no-hidden-costs:
+    level: forbidden
+  innovation.security-privacy-review:
+    level: required
+  innovation.standards-non-bypass:
+    level: forbidden
+  innovation.scope-baseline:
+    level: required
+  innovation.mvp-definition:
+    level: required
+  innovation.no-silent-scope-change:
+    level: forbidden
+  innovation.success-criteria:
+    level: required
+  innovation.kill-criteria:
+    level: required
+  innovation.no-sunk-cost-continuation:
+    level: forbidden
+  innovation.experiment-before-build:
+    level: recommended
+  innovation.decision-recorded:
+    level: required
+  innovation.revisit-conditions:
+    level: required
+  innovation.brainstorm-not-roadmap:
+    level: forbidden
+  innovation.portfolio-overlap:
+    level: required
+  innovation.prioritization-discipline:
+    level: forbidden
+  innovation.new-project-justification:
+    level: required
+  innovation.integrity-invariant:
+    level: forbidden
+
+# There is deliberately no `applicability:` block. Every rule's subject exists here: this repository
+# records real innovation proposals and is evaluated against them, so no rule is declared
+# not-applicable. A not-applicable declaration is a claim about THIS PROJECT rather than about the
+# rule, it stops being true the moment the project changes, and the mechanism therefore demands a
+# reason, a review date, and a revisit condition. Declaring one without a genuine subject-absence
+# would be using applicability as a quiet exception, which is exactly what the two mechanisms are
+# kept separate to prevent.
+#
+# (An empty `applicability: {}` is not written here because scripts/yaml.mjs rejects flow mappings
+# rather than guessing at them — the parser failing loudly is the design working.)
+
+# No exceptions. Every rule that applies here is either met, failing, or honestly unevaluated, and a
+# failing rule is reported as a failure rather than waived.
+exceptions: []
+
+# Recorded human judgement for the rules the catalog says a human evaluates.
+#
+# Eight rules in this catalog are manual-review with `none` assurance. Without an attestation they
+# report `not-evaluated` — which means nobody looked, NOT that nothing was wrong. Four are attested
+# below because a human actually reviewed the proposals against them.
+#
+# `reviewedAgainst.paths` lists EVERY proposal, not a sample, and that is load-bearing: adding a
+# proposal without extending these lists would leave an attestation quietly asserting less than a
+# reader would take it to mean. When proposal 0003 was added, all four were re-reviewed against it,
+# the paths extended, the digest recomputed, and the evidence text rewritten to say what was actually
+# examined. Updating the digest alone would have been the cheaper move and a dishonest one.
+#
+# The remaining four are
+# left unattested deliberately, and their `not-evaluated` status in the verdict is the honest
+# report: this repository has no portfolio to judge prioritization against, no roadmap presentation
+# to inspect, no external standards regime to bypass, and no revision history of a release objective
+# to compare. Attesting them would be assertion rather than evidence.
+attestations:
+  innovation.no-fabricated-evidence:
+    status: approved
+    reviewedBy: "project-owner"
+    reviewedAt: "2026-08-09"
+    # One line: scripts/yaml.mjs supports a deliberately small subset and rejects block scalars
+    # rather than guessing at them. The parser failing loudly here is the design working.
+    evidence: "Read every evidence entry in all three proposals and traced each to its stated source. Every repository-relative citation resolves to a file in this repository and says what the entry claims. No entry cites an interview, a survey, a market study, a customer quote, or a metric — because none was conducted, and the entries that would otherwise have carried them are recorded as assumption instead. Specifically checked that E5 and E6 in proposal 0001, E5 and E6 in proposal 0002, and E5 through E7 in proposal 0003 are labelled assumption or hypothesis rather than user-evidence or market-evidence, since those are the claims a fabricated proposal would most likely have inflated. Proposal 0003 is the sharpest case: it argues for a feature whose whole justification would be strengthened by adopter evidence, and it records that no adoption has occurred rather than inventing any."
+    reference: "standards/02-evidence-taxonomy-and-integrity.md"
+    reviewedAgainst:
+      paths:
+        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
+        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
+        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
+      # Content digest of the paths above, printed by `standards validate` when absent. When those
+      # files change materially this stops matching, the attestation goes stale, and the rule
+      # returns to not-evaluated until a human looks again.
+      digest: "4407547b0f543755eb49eb77e778bbf2"
+
+  innovation.no-hidden-costs:
+    status: approved
+    reviewedBy: "project-owner"
+    reviewedAt: "2026-08-09"
+    evidence: "Reviewed all three proposals' cost sections against what is actually known about the work. Proposal 0001 records the vendored engine as duplicated code with no synchronisation mechanism, states that a defect fixed in the sibling repository will not be fixed here, and names the fragmented-experience cost as the weakest part of its own case rather than answering it. Proposal 0002 records that its own rejection leaves a real duplication cost unpaid. Proposal 0003 records that its small implementation cost is not the real cost — that it would introduce the first repository-scoped rule into a catalog of proposal-scoped ones, and that the resulting split is cheap to introduce and expensive to reverse. No cost known at the time of writing was omitted from any of the three; the opportunity-cost entries name the specific work displaced rather than gesturing at it."
+    reference: "standards/05-cost-accounting.md"
+    reviewedAgainst:
+      paths:
+        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
+        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
+        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
+      digest: "4407547b0f543755eb49eb77e778bbf2"
+
+  innovation.novelty-not-value:
+    status: approved
+    reviewedBy: "project-owner"
+    reviewedAt: "2026-08-09"
+    evidence: "Checked all three proposals for arguments resting on novelty, technical interest, or model approval. None claims value from being new. Proposal 0001's differentiation section names two specific behaviours — supporting a compliant decision not to build, and refusing to let unknown count as a pass — rather than asserting originality, and its expected-impact entry is explicitly grounded in two entries labelled assumption. Proposal 0002's value section states plainly that it delivers no user value, which is the opposite of the failure this rule guards against. Proposal 0003 explicitly declines the novelty argument available to it: being the first repository-scoped rule is recorded under differentiation as a genuine extension of the model and simultaneously under technical debt as a risk, rather than being offered as a reason to build."
+    reference: "standards/02-evidence-taxonomy-and-integrity.md"
+    reviewedAgainst:
+      paths:
+        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
+        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
+        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
+      digest: "4407547b0f543755eb49eb77e778bbf2"
+
+  innovation.no-sunk-cost-continuation:
+    status: approved
+    reviewedBy: "project-owner"
+    reviewedAt: "2026-08-09"
+    evidence: "All three decisions were checked for reasoning from investment already made. Proposal 0002 was rejected after its alternative had already been implemented by copy, and the rejection rationale turns entirely on two standing constraints and an unobserved defect rate rather than on the work already done. Proposal 0001's kill criteria are written forward — they name conditions under which the framework would be abandoned in favour of a written checklist — rather than treating the authoring effort as a reason to continue. Proposal 0003 is the inverse case and was checked for it: nothing has been invested in it, and the deferral rests on missing evidence rather than on protecting or justifying prior effort."
+    reference: "standards/08-success-and-kill-criteria.md"
+    reviewedAgainst:
+      paths:
+        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
+        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
+        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
+      digest: "4407547b0f543755eb49eb77e778bbf2"

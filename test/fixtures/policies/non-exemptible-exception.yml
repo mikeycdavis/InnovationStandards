@@ -1,0 +1,10 @@
+standardVersion: "1.0.0"
+project: "Waived"
+rules:
+  innovation.no-fabricated-evidence:
+    level: forbidden
+exceptions:
+  - rule: innovation.no-fabricated-evidence
+    reason: "attempting to waive a prohibition that admits none"
+    approvedBy: "owner"
+    approvedAt: "2026-08-09"
