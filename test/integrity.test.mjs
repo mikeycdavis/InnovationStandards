@@ -14,7 +14,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCatalog } from "../scripts/catalog.mjs";
@@ -193,4 +193,96 @@ test("the CLI tells a blocked operator not to weaken the rule", async () => {
   const cli = await read("scripts/standards.mjs");
   assert.match(cli, /STOP\./);
   assert.match(cli, /that edit is itself the violation/i);
+});
+
+// --- Vendored provenance ------------------------------------------------------------------------
+//
+// This engine was copied from another standards framework (ADR 0001). The code was adapted; its
+// comments and emitted strings were not, and they carried thirty-one citations naming standards and
+// decision records that do not mean here what they meant there. Two commits corrected them.
+//
+// These guards pin the DEFECT, not the replacement wording. Nothing below asserts what a message
+// should say — only that it must not claim an authority this repository never established, which is
+// the same failure class as a rule claiming assurance its check cannot deliver.
+
+/** Every source and test file the vendored engine arrived in. */
+const SOURCES = [
+  "scripts/catalog.mjs", "scripts/compliance.mjs", "scripts/diagrams.mjs", "scripts/init.mjs",
+  "scripts/jsonschema.mjs", "scripts/policy.mjs", "scripts/yaml.mjs", "scripts/proposal.mjs",
+  "scripts/standards.mjs", "scripts/inventory.mjs", "scripts/fidelity.mjs",
+  "test/diagrams.test.mjs", "test/compliance.test.mjs", "test/integrity.test.mjs",
+];
+
+test("no source cites a standard this repository does not have", async () => {
+  // The dangling half of the defect. Fourteen standards exist; a citation to a number well beyond
+  // that is provenance from the framework this engine was vendored from. Note that this file scans
+  // itself, so an out-of-range number cannot be written here even to describe one.
+  // Counted, never hardcoded: if a fifteenth standard is ever added this guard widens with it.
+  const total = (await readdir(path.join(ROOT, "standards"))).filter((f) => /^\d\d-.*\.md$/.test(f)).length;
+  assert.ok(total > 0, "no standards found to bound the citation range");
+  for (const file of SOURCES) {
+    const text = await read(file);
+    for (const [, n] of text.matchAll(/Standard (\d+)/g)) {
+      assert.ok(
+        Number(n) >= 1 && Number(n) <= total,
+        `${file} cites Standard ${n}; this repository has ${total}`,
+      );
+    }
+  }
+});
+
+test("no emitted string cites a decision record, because none of them has one to cite", async () => {
+  // The RESOLVING half, and the more dangerous one. "The .mmd is canonical (ADR 0003)" pointed at a
+  // real document — the evidence-taxonomy decision — so a reader who checked found something and
+  // concluded the behaviour was governed. A dangling reference corrects itself; this one does not.
+  //
+  // Scoped to strings the tool PRINTS or THROWS. Comments may cite an ADR, and several correctly do
+  // (0004 for the canonical proposal path, 0005 for the invariant class). No message emitted by
+  // catalog, policy, or diagrams has a decision record behind it, so any ADR citation in one is a
+  // regression by construction.
+  for (const file of ["scripts/catalog.mjs", "scripts/policy.mjs", "scripts/diagrams.mjs"]) {
+    const text = await read(file);
+    const emitted = [
+      ...text.matchAll(/(?:throw new \w*Error\(|process\.stdout\.write\(|remediation:\s*)([\s\S]{0,400}?)\)[,;]/g),
+    ].map((m) => m[1]);
+    for (const chunk of emitted) {
+      assert.doesNotMatch(
+        chunk,
+        /ADR\s*\d/i,
+        `${file} emits a message citing a decision record: ${chunk.slice(0, 90)}`,
+      );
+    }
+  }
+});
+
+test("every decision record cited anywhere in the engine actually exists", async () => {
+  const present = new Set(
+    (await readdir(path.join(ROOT, "artifacts/adr"))).map((f) => f.slice(0, 4)),
+  );
+  for (const file of SOURCES) {
+    const text = await read(file);
+    for (const [, n] of text.matchAll(/ADR (\d{4})/g)) {
+      assert.ok(present.has(n), `${file} cites ADR ${n}, which does not exist`);
+    }
+  }
+});
+
+test("the mutation test for the provenance guards — they can actually fail", async () => {
+  // Each guard is worth having only if it fails when the defect returns. Reintroduce both forms.
+  // The number is interpolated rather than written out: the guard above scans this file too, so
+  // spelling an out-of-range citation here would trip it. That is the guard working, not a false
+  // positive — and it is why the mutation subject is assembled at runtime.
+  const reintroduced = `see Standard ${33} R4`;
+  assert.throws(
+    () => {
+      for (const [, n] of reintroduced.matchAll(/Standard (\d+)/g)) {
+        assert.ok(Number(n) >= 1 && Number(n) <= 14);
+      }
+    },
+    "the range guard does not detect a citation to a standard that does not exist",
+  );
+  assert.throws(
+    () => assert.doesNotMatch('"The .mmd is canonical (ADR 0003)."', /ADR\s*\d/i),
+    "the emitted-citation guard does not detect the string it exists to prevent",
+  );
 });

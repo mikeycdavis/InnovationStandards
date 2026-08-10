@@ -14,8 +14,8 @@
  * is canonical, a rendered `.svg` and an embedded fence are both derived, and a derived copy that no
  * longer matches its source is drift.
  *
- * Two `remediation` strings below still say "(ADR 0003)". They are program output rather than
- * comments, so correcting them is left for a separate decision.
+ * Two `remediation` strings below used to say "(ADR 0003)" too. They now cite nothing, and
+ * test/integrity.test.mjs asserts no emitted string reintroduces a false decision-record citation.
  *
  * The design constraint worth naming: **this check requires no Mermaid toolchain.** It compares
  * text, not pictures. That is what lets a zero-dependency repository enforce the rule at all — a
@@ -108,7 +108,7 @@ async function check(root) {
           allBlocks.length === 0
             ? "is not embedded in any document"
             : "no embedded copy matches this source — a document is showing a stale diagram",
-        remediation: "Re-embed the .mmd verbatim in its document. The .mmd is canonical (ADR 0003).",
+        remediation: "Re-embed the .mmd verbatim in its document. The .mmd is canonical.",
       });
     }
 
@@ -149,7 +149,7 @@ async function check(root) {
         file: rel(file),
         message: "SVG has no .mmd source",
         remediation:
-          "Diagrams are authored in Mermaid and rendered (ADR 0003). If this is not a diagram, move it out of a diagram path.",
+          "Diagrams are authored in Mermaid and rendered. If this is not a diagram, move it out of a diagram path.",
       });
     }
   }

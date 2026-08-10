@@ -19,10 +19,10 @@
  * (design/concept-map.md). No ADR records that decision — it was made in the plan, and every
  * `aliases` array is empty and stays empty in 1.x as a result.
  *
- * Two strings below and in scripts/policy.mjs still cite "ADR 0002" for this, which in THIS
- * repository is the eight-outcome decision model — a real document that has nothing to do with rule
- * identity. They are thrown/printed rather than commented, so correcting them is not a comment-only
- * change and is left for a separate decision.
+ * A thrown message here and a printed line in scripts/policy.mjs used to cite "ADR 0002" for this.
+ * In THIS repository that is the eight-outcome decision model — a real document with nothing to do
+ * with rule identity, which is why it survived review: the reference resolved. Both now cite
+ * nothing, and test/integrity.test.mjs asserts they cannot come back.
  */
 
 import { readdir, readFile } from "node:fs/promises";
@@ -78,9 +78,7 @@ export async function loadCatalog(dir = CATALOG_DIR) {
     for (const rule of parsed.rules) {
       const where = `${file}:${rule.id ?? "(no id)"}`;
       if (typeof rule.id !== "string" || !CANONICAL_ID.test(rule.id)) {
-        // NOTE: the "(ADR 0002)" in this message is a false citation — see the sweep note in the
-        // module header. Left as-is deliberately: changing a thrown string is not a comment change.
-        throw new CatalogError(`${where}: id is not a canonical category.kebab-case-name (ADR 0002)`);
+        throw new CatalogError(`${where}: id is not a canonical category.kebab-case-name`);
       }
       if (rules.has(rule.id)) throw new CatalogError(`${where}: duplicate rule id`);
 

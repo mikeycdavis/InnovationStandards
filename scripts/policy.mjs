@@ -245,7 +245,7 @@ async function main() {
   } else {
     process.stdout.write(`Policy: ${relative}\n\n`);
     for (const alias of result.aliases) {
-      process.stdout.write(`  legacy key '${alias.alias}' — canonical form is '${alias.canonical}' (ADR 0002)\n`);
+      process.stdout.write(`  legacy key '${alias.alias}' — canonical form is '${alias.canonical}'\n`);
     }
     if (result.aliases.length > 0) process.stdout.write("\n");
     for (const error of result.errors) {
