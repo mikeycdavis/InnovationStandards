@@ -19,6 +19,11 @@
 - **E5 [assumption]** Adopters will reach this state and it will matter to them. No adoption has occurred, so nothing observed supports this yet.
 - **E6 [assumption]** A repository-level rule is the right shape for the answer, rather than a report line, a distinct exit code, or a `standards check --all` warning. Each of the four would surface the same fact differently and none has been compared against the others.
 - **E7 [hypothesis]** The rule would need a declared-applicability escape for repositories that genuinely govern no innovation decisions, or it becomes a rule most adopters immediately declare not-applicable — which would train them to reach for that mechanism casually, and the applicability escape is precisely the one that must not become routine.
+- **E8 [observation]** The state this proposal describes has occurred. HouseDoc adopted v1.0.1 and its first `standards validate` returned `COMPLIANT` — 22 rules passed, 0 failed — against a repository holding zero proposals. Added 2026-08-09 when the RevisitWhen below fired (source: observed during the HouseDoc adoption, commit 44f3bab on branch develop)
+- **E9 [observation]** HouseDoc's emptiness is correct and documented. It has 80 commits of shipped work whose decisions were never recorded, and writing proposals for them would be fabrication — which `standards init` itself says in the mode this repository's own tooling exists to detect. The silence is the intended state, not a lapse (source: observed during the HouseDoc adoption; recorded in that repository's artifacts/innovation/governance.md)
+- **E10 [technical-evidence]** Every adopter passes through this state legitimately. On the day of adoption a repository has a populated policy and no proposals by construction, and it stays that way until its next genuine decision — which may be months away and may correctly never come. A rule firing on "policy present, proposals absent" cannot distinguish that from a repository that has stopped recording, because at the instant it fires the two are the same repository (from: E8, E9)
+- **E11 [assumption]** The distinction could be drawn if a governance-effective date existed, so the rule could ask "no proposals since adoption" rather than "no proposals". No such mechanism exists in v1.0.1, and whether one should is an undecided question this proposal does not own.
+- **E12 [observation]** No reviewer has yet read a proposal-free `COMPLIANT` verdict and drawn a wrong conclusion from it. The second half of the RevisitWhen trigger has not fired; only the first half has (source: observed during the HouseDoc adoption)
 
 ## Assumptions and uncertainty
 
@@ -87,9 +92,46 @@
 - **Cannibalization:** None. It would add a rule rather than replace one, and nothing currently occupies this position.
 - **Priority:** Below validating the existing thirty rules against real adoption. The framework's next most valuable information is whether what exists works, not whether it can be extended.
 
+## Revision history
+
+### 2026-08-09 — reconsidered because the RevisitWhen fired
+
+**What triggered it.** HouseDoc adopted InnovationStandards v1.0.1 and reached exactly the state this
+proposal names: a populated policy, zero proposals, and a `COMPLIANT` verdict. That is the first half
+of the recorded trigger, and it fired eleven hours after the deferral was written.
+
+**What changed in this document.** Evidence entries E8 through E12 were added. The recorded outcome
+was reconsidered and is unchanged. The `RevisitWhen` was rewritten, because the old one has been
+consumed and a deferral whose trigger has already fired has no trigger. Nothing else was altered:
+E1–E7 stand as written, including E5 and E6, which the new evidence does not touch.
+
+**What the new evidence settles.** E5 was an assumption that adopters would reach this state. They do —
+the first one did, immediately. That half is now observed. The other half of E5, that it would *matter*
+to them, is not: E12 records that no reviewer has been misled, and the only person who has looked at
+HouseDoc's verdict wrote the tool. One contaminated observation is not evidence of harm.
+
+**What the new evidence unsettles.** E10 is the finding that matters, and it cuts against building.
+HouseDoc's silence is *correct* — the emptiness is principled, documented, and exactly what `init`'s
+undocumented-decisions mode instructs. A rule firing on "policy present, proposals absent" would have
+fired on the first adopter on day one and been wrong. Worse, it would have been wrong in the way E7
+predicted: HouseDoc's only available response would have been an applicability declaration against a
+rule that genuinely applies to it, which is precisely the misuse of the applicability mechanism this
+proposal was deferred to avoid teaching.
+
+So the adoption did not resolve the decisive uncertainty. It sharpened the problem statement and made
+the design harder: the rule cannot be written correctly without a way to say *since when*, and E11
+records that no such mechanism exists. The gap this proposal describes turns out to be downstream of
+the governance-effective-date gap that HouseDoc's own governance record also names as unenforced.
+
+**Why the outcome does not change.** E7's kill criterion asks whether adopters would routinely reach
+for the applicability escape, and sets its threshold at two of the first three adopters. There has been
+one. One adopter is not a sample, and this one argues for continued deferral rather than against it.
+Converting `defer` to `build` here would be treating a fired trigger as a mandate — the trigger obliges
+a reconsideration, and this is it.
+
 ## Decision
 
 - **Outcome:** defer
 - **Rationale:** The gap is real, observed, and already published rather than hidden. What is missing is not the implementation — that is small and well understood — but the evidence that would tell us the right shape. E5 through E7 record three open questions, and the decisive one is E7: a rule most adopters immediately declare not-applicable would damage the applicability mechanism more than the silence damages the verdict, and nothing available today tells us which way that goes. Building now would spend a MAJOR version on a design chosen without the information that determines it. Recorded as `defer` rather than `reject` because the problem does not go away and the revisit trigger is concrete and expected; recorded as `defer` rather than `build` because 1.0.0's release gate is green and moving the definition of done after the fact is exactly the scope change Standard 7 R4 prohibits.
-- **RevisitWhen:** The first external repository adopts 1.0.0 and reaches a state of having a populated policy with no proposals — or any reviewer reports having read a proposal-free `COMPLIANT` verdict as evidence that a project's decisions were under governance.
-- **Decided:** 2026-08-09
+- **RevisitWhen:** Rewritten 2026-08-09; the original trigger fired and is recorded in the revision history above. Three conditions, any one of which reopens this: a third repository adopts, so that E7's kill criterion has the sample it names; or a reviewer reports having read a proposal-free `COMPLIANT` verdict as evidence that a project's decisions were under governance, which is E12's outstanding half and the only observation that would establish harm; or a governance-effective-date mechanism is decided, since E10 and E11 say the rule cannot be written correctly without one and its absence is what blocks the design rather than the appetite.
+- **Decided:** 2026-08-09, reconsidered 2026-08-09. The reconsideration is recorded in the revision history above and did not change the outcome.

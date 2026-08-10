@@ -96,77 +96,44 @@ rules:
 # failing rule is reported as a failure rather than waived.
 exceptions: []
 
-# Recorded human judgement for the rules the catalog says a human evaluates.
+# ---------------------------------------------------------------------------------------------
+# ATTESTATIONS — all four LAPSED on 2026-08-09, and deliberately not renewed.
+# ---------------------------------------------------------------------------------------------
 #
-# Eight rules in this catalog are manual-review with `none` assurance. Without an attestation they
-# report `not-evaluated` — which means nobody looked, NOT that nothing was wrong. Four are attested
-# below because a human actually reviewed the proposals against them.
+# Four of the eight manual-review rules were attested at v1.0.1 against proposals 0001–0003:
+# no-fabricated-evidence, no-hidden-costs, novelty-not-value, no-sunk-cost-continuation. Their full
+# text — reviewer, date, evidence, reviewed paths and digest — is preserved verbatim in git history
+# at tag v1.0.1 and can be restored from there.
 #
-# `reviewedAgainst.paths` lists EVERY proposal, not a sample, and that is load-bearing: adding a
-# proposal without extending these lists would leave an attestation quietly asserting less than a
-# reader would take it to mean. When proposal 0003 was added, all four were re-reviewed against it,
-# the paths extended, the digest recomputed, and the evidence text rewritten to say what was actually
-# examined. Updating the digest alone would have been the cheaper move and a dishonest one.
+# Two things invalidated them on the same day, and it is worth recording that BOTH mechanisms fired
+# rather than only the one that was designed for this:
 #
-# The remaining four are
-# left unattested deliberately, and their `not-evaluated` status in the verdict is the honest
-# report: this repository has no portfolio to judge prioritization against, no roadmap presentation
-# to inspect, no external standards regime to bypass, and no revision history of a release objective
-# to compare. Attesting them would be assertion rather than evidence.
-attestations:
-  innovation.no-fabricated-evidence:
-    status: approved
-    reviewedBy: "project-owner"
-    reviewedAt: "2026-08-09"
-    # One line: scripts/yaml.mjs supports a deliberately small subset and rejects block scalars
-    # rather than guessing at them. The parser failing loudly here is the design working.
-    evidence: "Read every evidence entry in all three proposals and traced each to its stated source. Every repository-relative citation resolves to a file in this repository and says what the entry claims. No entry cites an interview, a survey, a market study, a customer quote, or a metric — because none was conducted, and the entries that would otherwise have carried them are recorded as assumption instead. Specifically checked that E5 and E6 in proposal 0001, E5 and E6 in proposal 0002, and E5 through E7 in proposal 0003 are labelled assumption or hypothesis rather than user-evidence or market-evidence, since those are the claims a fabricated proposal would most likely have inflated. Proposal 0003 is the sharpest case: it argues for a feature whose whole justification would be strengthened by adopter evidence, and it records that no adoption has occurred rather than inventing any."
-    reference: "standards/02-evidence-taxonomy-and-integrity.md"
-    reviewedAgainst:
-      paths:
-        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
-        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
-        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
-      # Content digest of the paths above, printed by `standards validate` when absent. When those
-      # files change materially this stops matching, the attestation goes stale, and the rule
-      # returns to not-evaluated until a human looks again.
-      digest: "4407547b0f543755eb49eb77e778bbf2"
-
-  innovation.no-hidden-costs:
-    status: approved
-    reviewedBy: "project-owner"
-    reviewedAt: "2026-08-09"
-    evidence: "Reviewed all three proposals' cost sections against what is actually known about the work. Proposal 0001 records the vendored engine as duplicated code with no synchronisation mechanism, states that a defect fixed in the sibling repository will not be fixed here, and names the fragmented-experience cost as the weakest part of its own case rather than answering it. Proposal 0002 records that its own rejection leaves a real duplication cost unpaid. Proposal 0003 records that its small implementation cost is not the real cost — that it would introduce the first repository-scoped rule into a catalog of proposal-scoped ones, and that the resulting split is cheap to introduce and expensive to reverse. No cost known at the time of writing was omitted from any of the three; the opportunity-cost entries name the specific work displaced rather than gesturing at it."
-    reference: "standards/05-cost-accounting.md"
-    reviewedAgainst:
-      paths:
-        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
-        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
-        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
-      digest: "4407547b0f543755eb49eb77e778bbf2"
-
-  innovation.novelty-not-value:
-    status: approved
-    reviewedBy: "project-owner"
-    reviewedAt: "2026-08-09"
-    evidence: "Checked all three proposals for arguments resting on novelty, technical interest, or model approval. None claims value from being new. Proposal 0001's differentiation section names two specific behaviours — supporting a compliant decision not to build, and refusing to let unknown count as a pass — rather than asserting originality, and its expected-impact entry is explicitly grounded in two entries labelled assumption. Proposal 0002's value section states plainly that it delivers no user value, which is the opposite of the failure this rule guards against. Proposal 0003 explicitly declines the novelty argument available to it: being the first repository-scoped rule is recorded under differentiation as a genuine extension of the model and simultaneously under technical debt as a risk, rather than being offered as a reason to build."
-    reference: "standards/02-evidence-taxonomy-and-integrity.md"
-    reviewedAgainst:
-      paths:
-        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
-        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
-        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
-      digest: "4407547b0f543755eb49eb77e778bbf2"
-
-  innovation.no-sunk-cost-continuation:
-    status: approved
-    reviewedBy: "project-owner"
-    reviewedAt: "2026-08-09"
-    evidence: "All three decisions were checked for reasoning from investment already made. Proposal 0002 was rejected after its alternative had already been implemented by copy, and the rejection rationale turns entirely on two standing constraints and an unobserved defect rate rather than on the work already done. Proposal 0001's kill criteria are written forward — they name conditions under which the framework would be abandoned in favour of a written checklist — rather than treating the authoring effort as a reason to continue. Proposal 0003 is the inverse case and was checked for it: nothing has been invested in it, and the deferral rests on missing evidence rather than on protecting or justifying prior effort."
-    reference: "standards/08-success-and-kill-criteria.md"
-    reviewedAgainst:
-      paths:
-        - artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md
-        - artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md
-        - artifacts/innovation-proposals/0003-proposal-inventory-rule.md
-      digest: "4407547b0f543755eb49eb77e778bbf2"
+#   Content freshness.  Proposal 0003 was materially revised — its RevisitWhen fired, five evidence
+#                       entries were added, and a revision entry was written. The recorded digest
+#                       stopped matching, so the evaluator lapsed all four automatically and the
+#                       eight manual-review rules returned to not-evaluated without anyone acting.
+#
+#   Coverage freshness. Proposals 0004 and 0005 were added. `reviewedAgainst.paths` named neither,
+#                       so each attestation covered three of five proposals while reading as though
+#                       it covered the repository. A test in test/audit.test.mjs reports exactly
+#                       this, and it is the reason these entries were removed rather than left to
+#                       lapse quietly.
+#
+# THEY ARE NOT RENEWED, and the reason is the point of the mechanism. Renewing them means a human
+# re-reading all five proposals against all four rules and writing what was actually examined. The
+# proposals that broke coverage — 0004 and 0005 — were written by the same party that would be
+# renewing, and an author attesting to their own work is an assertion wearing the costume of a
+# review. The cheap move was available and is exactly what the v1.0.1 comment here warned against:
+# extend the path list, recompute the digest, leave the evidence text alone. That would have
+# restored a green line to the verdict and established nothing.
+#
+# What the verdict says instead is `not-evaluated` against eight rules, with the words "Nothing
+# examined these. That is not a pass — it is the absence of a result." That is the true state.
+#
+# To renew: review all five proposals against the four rules, restore the entries from v1.0.1,
+# rewrite each `evidence` line to describe what was actually examined in 0004 and 0005, extend
+# `reviewedAgainst.paths` to all five, and let `standards validate` print the new digest.
+#
+# The other four manual-review rules were never attested and still should not be: this repository
+# has no portfolio to judge prioritization against, no roadmap presentation to inspect, no external
+# standards regime to bypass, and no revision history of a release objective to compare.
