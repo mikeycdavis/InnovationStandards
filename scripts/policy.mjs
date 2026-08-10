@@ -2,15 +2,15 @@
 /**
  * Validate a project policy against schemas/project-policy.schema.json.
  *
- * Exit codes follow Standard 23 R3, and the distinction is the point:
+ * Exit codes are a CLI contract of this repository's own (design/cli-design.md), not a requirement of
+ * any standard. The distinction is the point:
  *
  *   0  the policy is valid
  *   1  the policy is valid but a compliance condition fails — today, an expired exception
  *   2  the policy could not be evaluated: unreadable, unparseable, or schema-invalid
  *
  * Invalid configuration is a `2`, never a `1`. "This policy is malformed" and "this project fails a
- * rule" are different facts, and collapsing them reports a broken config as non-compliance
- * (Standard 30 R1).
+ * rule" are different facts, and collapsing them reports a broken config as non-compliance.
  *
  * Usage: node scripts/policy.mjs [path/to/project-policy.yml] [--json] [--schema <path>]
  */
@@ -31,11 +31,13 @@ const DEFAULT_SCHEMA = path.join(ROOT, "schemas/project-policy.schema.json");
 const DEFAULT_POLICY = path.join(ROOT, "project-policy.yml");
 
 /**
- * Legacy policy keys and the canonical rule IDs they normalize to (ADR 0002), derived from the rule
- * catalog's `aliases` field rather than restated here.
+ * Legacy policy keys and the canonical rule IDs they normalize to, derived from the rule catalog's
+ * `aliases` field rather than restated here. In 1.x every `aliases` array is empty, so this resolves
+ * to nothing — the mechanism exists for a later release, not for a legacy this repository has.
  *
  * This used to be a hand-maintained table in this file. Once the catalog landed that became a second
- * definition of the same mapping — the dual identity ADR 0002 abolished, reintroduced one layer down.
+ * definition of the same mapping — the dual identity that fixing rule ids on day one avoided,
+ * reintroduced one layer down.
  * The catalog is the single source of rule identity and metadata; this module reads it.
  */
 export const LEGACY_ALIASES = await (async () => {
@@ -106,7 +108,7 @@ function complianceFindings(document, today, catalog) {
     }
   }
 
-  // Standard 20 R4: a rule its standard declared non-exemptible admits no exception. Caught here so
+  // Standard 14 R3: a rule its standard declared non-exemptible admits no exception. Caught here so
   // an adopter learns it from `standards policy` rather than from a surprising audit verdict, and
   // caught again in the compliance engine so it cannot be bypassed by skipping this command.
   for (const entry of Array.isArray(document.exceptions) ? document.exceptions : []) {
@@ -136,7 +138,9 @@ function complianceFindings(document, today, catalog) {
 
   // An exception says the rule applies and is knowingly unmet; not-applicable says the rule has no
   // subject here. A rule cannot be both, and a policy asserting both is ambiguous rather than
-  // strict — there is no safe way to pick one (Standard 34 R3).
+  // strict — there is no safe way to pick one. No standard establishes that; it is this validator
+  // refusing to guess. Standard 14 R2 is adjacent but different: it covers declaring a rule
+  // not-applicable in order to escape it, which is a motive this check cannot see.
   const notApplicable = new Set(
     Object.entries(document.applicability ?? {})
       .filter(([, decl]) => decl?.status === "not-applicable")

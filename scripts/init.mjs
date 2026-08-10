@@ -1,5 +1,14 @@
 /**
- * `standards init` — bootstrap a project into the framework (Standard 33).
+ * `standards init` — bootstrap a project into the framework.
+ *
+ * NOTHING IN standards/ GOVERNS THIS FILE'S SAFETY CONTRACT. The plan/apply split, the dry-run
+ * guarantee, and the overwrite refusal below are all engineering judgement, not requirements: none
+ * of the fourteen standards mentions bootstrapping, dry runs, or destructive operations. Earlier
+ * revisions of this comment carried standard numbers inherited from the framework this engine was
+ * vendored from; one of them was in range here and resolved to Evidence Taxonomy and Integrity,
+ * which is not what it meant. The citations are removed rather than remapped, because there is
+ * nothing to remap them to, and a reference that resolves to the wrong document is worse than none:
+ * it reads as governed when it is not. See git history for the prior text.
  *
  * The safety contract IS the design, so the module is split in two:
  *
@@ -9,10 +18,10 @@
  *
  * `--dry-run` is therefore not a separate code path that has to be kept in step with the real one —
  * it is `plan()` without `apply()`. A dry-run whose output does not predict the real run is worse
- * than none, because it is trusted (Standard 33 R5), and the only way to guarantee that is to make
- * them the same computation.
+ * than none, because it is trusted, and the only way to guarantee that is to make them the same
+ * computation.
  *
- * Mutating is not the same as destructive (Standard 2):
+ * Mutating is not the same as destructive:
  *
  *   create a missing artifact   → ordinary execute. No approval; this is what init is for.
  *   replace an existing one     → destructive. Refused by default, and reported as a conflict.
@@ -39,6 +48,10 @@ const FRAMEWORK = path.resolve(HERE, "..");
  * response is NOT to author proposals for work that already shipped — a proposal written after the
  * fact, describing a decision nobody actually made that way, is a fabricated record, and it is
  * indistinguishable later from a real one.
+ *
+ * That is Standard 2 R4 (`innovation.no-fabricated-evidence`, invariant-class) applied to a whole
+ * artifact rather than to one citation, and Standard 13 R5 is its companion: a record that cannot
+ * say what was known and when has lost the property that made it worth keeping.
  */
 export const MODES = {
   GREENFIELD: "greenfield",
@@ -66,8 +79,13 @@ const ARTIFACTS = [
  *
  * Deliberately conservative: a false "greenfield" is the dangerous direction, because it lets a
  * clean-room plan be scaffolded over real code, and that is a fabricated history
- * (Standard 33 R4, Standard 44 R2). A false "existing" only costs a routing decision the operator
+ * (Standard 2 R4). A false "existing" only costs a routing decision the operator
  * can override with --mode.
+ *
+ * It does not currently succeed at being conservative. Markers are tested at the repository root
+ * only, so a project whose code sits one directory down reads as greenfield — the direction this
+ * comment calls dangerous. Recorded, with the evidence, in proposal 0004; the decision there is
+ * `explore`, so nothing below has been changed to address it.
  */
 const IMPLEMENTATION_MARKERS = [
   "src", "lib", "app", "source", "cmd", "internal", "pkg",
@@ -83,10 +101,10 @@ const has = (root, p) => existsSync(path.join(root, p));
  * A directory counts as evidence only when it has content.
  *
  * This exists because of a bug the tests caught: init creates an EMPTY
- * artifacts/project-plan-breakdown/ in reconstruction mode, and a second run then read its own
- * output as proof that a plan exists — flipping the mode to existing-with-plan and erasing the
- * `reconstructionRequired` signal. An empty plan directory is not a plan, and a tool must not treat
- * its own scaffolding as evidence about the project.
+ * artifacts/innovation-proposals/ in undocumented-decisions mode, and a second run then read its own
+ * output as proof that decisions had been recorded — flipping the mode to EXISTING_WITH_PROPOSALS
+ * and erasing the `undocumentedDecisions` signal. An empty proposal directory is not a record of a
+ * decision, and a tool must not treat its own scaffolding as evidence about the project.
  */
 function hasContent(root, p) {
   const target = path.join(root, p);
@@ -103,7 +121,7 @@ function hasContent(root, p) {
  *
  * `confidence` is INFERRED for everything except an explicit override, because this is a judgement
  * made from file presence. A wrong guess is recoverable only if the reader can see which guess was
- * made (Standard 33 R4).
+ * made — which is why the mode ships with its evidence and never alone.
  */
 export function detectMode(root, override = null) {
   const evidence = [];
@@ -153,7 +171,7 @@ export async function plan(root, options = {}) {
 
     if (artifact.directory) {
       // Creating a directory alongside existing contents is safe and expected; only writing a FILE
-      // over one of that name is destructive (Standard 33 R2).
+      // over one of that name is destructive.
       actions.push(
         exists
           ? { action: "preserve", path: artifact.path, reason: "directory already exists" }
@@ -171,7 +189,7 @@ export async function plan(root, options = {}) {
 
     const current = await readFile(target, "utf8");
     if (current === content) {
-      // Idempotence: a second run finds what the first wrote and leaves it alone (Standard 33 R3).
+      // Idempotence: a second run finds what the first wrote and leaves it alone.
       actions.push({ action: "preserve", path: artifact.path, reason: "already matches the template" });
       continue;
     }
@@ -226,8 +244,7 @@ export async function plan(root, options = {}) {
  *
  * A partially-completed run must leave no partial files: content is written in one call per file,
  * and a failure stops the run rather than continuing to the next artifact. A truncated
- * project-policy.yml fails validation in a way that looks like the project's fault
- * (Standard 33 R2).
+ * project-policy.yml fails validation in a way that looks like the project's fault.
  */
 export async function apply(root, planned) {
   const done = [];

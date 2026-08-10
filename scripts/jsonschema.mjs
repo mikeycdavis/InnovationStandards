@@ -2,14 +2,15 @@
  * A small JSON Schema evaluator covering exactly the keywords used by
  * schemas/project-policy.schema.json, and refusing to run against anything else.
  *
- * The schema file is the single definition of what a valid policy is (Standard 37 R5). This module
- * exists so that definition is *executed* rather than restated in hand-written checks — a
- * hand-written validator alongside a schema is two definitions, and the drift between them is
- * silent (Standard 27 R4).
+ * The schema file is the single definition of what a valid policy is. This module exists so that
+ * definition is *executed* rather than restated in hand-written checks — a hand-written validator
+ * alongside a schema is two definitions, and the drift between them is silent. Both of those are
+ * implementation contracts; no standard describes a policy schema.
  *
  * The strictness that matters: an unsupported keyword throws instead of being ignored. A validator
  * that silently skips a constraint it does not implement reports PASS for a document it never fully
- * checked, which is the false green of Standard 24 R2 in its purest form. If a future schema adds
+ * checked, which is the false green of Standard 14 R3 in its purest form — a result that reads as a
+ * pass for something nothing examined. If a future schema adds
  * `oneOf`, this module fails loudly until someone implements it.
  *
  * `format` is treated as an annotation and NOT validated, which is what the specification says it

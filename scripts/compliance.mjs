@@ -8,16 +8,19 @@
  * Four properties of it are load-bearing:
  *
  *   1. Status is computed from rules, never from the score. There is no threshold at which a
- *      percentage grants or withdraws compliance (Standard 30 R2).
- *   2. A rule nothing evaluated is `skipped`, never `passed`. Unknown is not a pass — it is what
- *      Standard 38 R3 refuses to let satisfy completion.
+ *      percentage grants or withdraws compliance. No standard requires this — it is an engine
+ *      contract, and test/compliance.test.mjs is where it is actually enforced.
+ *   2. A rule nothing evaluated is `skipped`, never `passed`. Unknown is not a pass
+ *      (Standard 14 R3, which calls this the deepest property in the system: deleting a check
+ *      produces NOT_EVALUATED, not compliance).
  *   3. The score's denominator is the rules that were actually evaluated, and the assurance
- *      breakdown ships beside it so the number cannot imply coverage it does not have.
+ *      breakdown ships beside it so the number cannot imply coverage it does not have. Also an
+ *      engine contract rather than a requirement.
  *   4. An invariant-class failure produces BLOCKED_BY_INVARIANT, a verdict distinguishable from
  *      ordinary non-compliance. NON_COMPLIANT means there is work to do; BLOCKED means stop, and do
  *      not route around this. An agent optimising for a green verdict needs that difference in the
  *      data, because the cheapest path to green otherwise runs through defeating the check
- *      (Standard 14, ADR 0005).
+ *      (Standard 14 R4, ADR 0005).
  */
 
 import { resolve } from "./catalog.mjs";
@@ -75,7 +78,7 @@ export function evaluate({ catalog, policy, findings, evaluated, today, digests 
     // A non-exemptible rule admits no exception. The waiver is REJECTED, not honoured and not
     // quietly ignored: an exception engine that can waive a rule its standard declared
     // non-exemptible has made the prohibition optional, which is not a prohibition
-    // (Standard 20 R4). Order matters — this is checked before expiry, because a non-exemptible
+    // (Standard 14 R3, first protection). Order matters — this is checked before expiry, because a non-exemptible
     // waiver is invalid whether or not it has lapsed.
     if (rule.nonExemptible) {
       rejectedExceptions.push({ ...entry, rule: rule.id, invariant: isInvariant(rule) });
@@ -150,7 +153,8 @@ export function evaluate({ catalog, policy, findings, evaluated, today, digests 
     // choose a rule's level, but selecting `optional` for a forbidden, non-exemptible rule is not a
     // selection — it is the policy redefining the rule, which the architecture forbids, and it would
     // otherwise convert a blocking violation into a warning. The downgrade is separately reported by
-    // innovation.integrity-invariant; this is the engine declining to honour it (Standard 14).
+    // innovation.integrity-invariant; this is the engine declining to honour it (Standard 14 R3,
+    // fourth protection: a policy may select which rules apply, never redefine how strongly one binds).
     const outcome =
       isInvariant(rule) || level === "required" || level === "forbidden"
         ? RESULT.failed
@@ -216,7 +220,7 @@ export function evaluate({ catalog, policy, findings, evaluated, today, digests 
  *
  * The rules are ADR 0005's, and the ordering is the interesting part: contradiction is checked
  * first, because a human saying a rule is satisfied does not change what a check observed. Evidence
- * outranks assertion (Standard 38 R4), and that is also why an attestation cannot bypass a
+ * outranks assertion (Standard 14 R3: an attestation never overrides an automated finding), and that is also why an attestation cannot bypass a
  * nonExemptible rule — not as a separate prohibition, but because the automated failure survives.
  */
 function judgeAttestation(rule, attestation, hits, today, digests) {
@@ -327,7 +331,8 @@ function summarise(results, policy) {
     else counts.skipped++;
   }
 
-  // Assurance accounts for every applicable rule, and the three MUST sum (Standard 30 R4).
+  // Assurance accounts for every applicable rule, and the three MUST sum. An engine contract, not a
+  // requirement: a breakdown that does not add up lets coverage go missing without anything saying so.
   const assurance = { automated: 0, manualReview: 0, notEvaluated: 0 };
   for (const r of results) {
     if (r.disposition === "not-applicable") continue;
@@ -377,7 +382,7 @@ function summarise(results, policy) {
   };
 }
 
-/** The Standard 25 envelope. `schemaVersion` versions this format, independent of the others. */
+/** The machine-readable output envelope. `schemaVersion` versions this format, independent of the others. */
 export function envelope({ verdict, project, standardVersion, auditedAt, repo, frameworkCoverage }) {
   return {
     schemaVersion: "1.0",

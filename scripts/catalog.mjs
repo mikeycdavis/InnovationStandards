@@ -1,6 +1,8 @@
 /**
- * The rule catalog: the single source of machine truth for rule identity and metadata
- * (Standard 27).
+ * The rule catalog: the single source of machine truth for rule identity and metadata.
+ *
+ * That is an architectural rule of this implementation, not a requirement of any standard — nothing
+ * in standards/ describes a catalog.
  *
  * The architectural rule this module exists to hold, and which the whole compliance system rests on:
  *
@@ -13,7 +15,14 @@
  * different level for a project, but a policy may not invent a rule the catalog does not define, and
  * an evaluator may not report against an id the catalog does not carry. `assertBindings` enforces
  * the last of those mechanically, because a detector reporting an unknown rule id is exactly the
- * dual-vocabulary drift ADR 0002 abolished.
+ * dual-vocabulary drift this repository avoided by fixing rule identity before any rule was authored
+ * (design/concept-map.md). No ADR records that decision — it was made in the plan, and every
+ * `aliases` array is empty and stays empty in 1.x as a result.
+ *
+ * Two strings below and in scripts/policy.mjs still cite "ADR 0002" for this, which in THIS
+ * repository is the eight-outcome decision model — a real document that has nothing to do with rule
+ * identity. They are thrown/printed rather than commented, so correcting them is not a comment-only
+ * change and is left for a separate decision.
  */
 
 import { readdir, readFile } from "node:fs/promises";
@@ -69,6 +78,8 @@ export async function loadCatalog(dir = CATALOG_DIR) {
     for (const rule of parsed.rules) {
       const where = `${file}:${rule.id ?? "(no id)"}`;
       if (typeof rule.id !== "string" || !CANONICAL_ID.test(rule.id)) {
+        // NOTE: the "(ADR 0002)" in this message is a false citation — see the sweep note in the
+        // module header. Left as-is deliberately: changing a thrown string is not a comment change.
         throw new CatalogError(`${where}: id is not a canonical category.kebab-case-name (ADR 0002)`);
       }
       if (rules.has(rule.id)) throw new CatalogError(`${where}: duplicate rule id`);
@@ -93,7 +104,7 @@ export async function loadCatalog(dir = CATALOG_DIR) {
         throw new CatalogError(`${where}: nonExemptible must be a boolean`);
       }
       // Present from the first release even when empty: adding them later means every existing rule
-      // silently lacks them, and consumers treat their absence as meaningful (Standard 27 R2).
+      // silently lacks them, and consumers treat their absence as meaningful.
       for (const field of ["deprecatedIn", "supersededBy", "removedIn"]) {
         if (!(field in rule)) throw new CatalogError(`${where}: lifecycle field '${field}' must be present`);
       }
@@ -156,8 +167,10 @@ export function assertBindings(catalog, ids) {
  * The hazard this exists to counter: someone reads `COMPLIANT` and forgets that the catalog covers a
  * subset of the framework. A verdict is a statement about the rules that exist as rules; this is a
  * statement about how much of the framework has been turned into rules at all. Mixing the two would
- * make a coverage improvement look like a compliance improvement, which is the elevation
- * Standard 24 R2 forbids one level up.
+ * make a coverage improvement look like a compliance improvement. No standard forbids that; it is
+ * the same instinct as Standard 14 R3's refusal to let an unevaluated rule read as a passing one,
+ * applied to a number rather than to a status, and the separation is enforced here and in the tests
+ * rather than by a requirement.
  *
  * `fullyMachineRepresented` is deliberately strict: a standard counts only when every one of its
  * catalogued rules is both evaluated by the validator AND carries assurance better than `none`.

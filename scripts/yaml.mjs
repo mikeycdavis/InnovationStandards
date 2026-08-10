@@ -2,8 +2,10 @@
  * A deliberately small, strict YAML subset parser — enough for a project policy and nothing more.
  *
  * Why hand-written: this repository has zero third-party dependencies, and CI has no install step
- * (design/standards-audit-cli.md). Why *strict*: an under-validating parser is a false green
- * (Standard 24 R2). A permissive parser that silently misreads `expires: 2026-12-31` as a Date, or
+ * (design/cli-design.md). Why *strict*: an under-validating parser is a false green — a document
+ * reported valid that nothing fully examined, which is the asymmetry Standard 14 R3 names: a false
+ * red has a complainant, a false green has none. A permissive parser that silently misreads
+ * `expires: 2026-12-31` as a Date, or
  * quietly ignores an anchor, would report a policy as valid that means something other than what its
  * author wrote. So every construct outside the supported subset is a hard error, not a best guess.
  *

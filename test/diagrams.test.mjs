@@ -30,7 +30,7 @@ test("an embedded copy that drifted from its source is caught", async () => {
 });
 
 test("an SVG with no Mermaid source is caught", async () => {
-  // The exact state ADR 0003 abolished: a hand-authored diagram with nothing it derives from.
+  // The exact state this check exists to prevent: a hand-authored diagram with nothing it derives from.
   const result = await check(path.join(FIXTURES, "orphan-svg"));
   assert.equal(result.findings.length, 1);
   assert.match(result.findings[0].message, /no \.mmd source/);
@@ -40,7 +40,7 @@ test("an SVG with no Mermaid source is caught", async () => {
 
 test("mutating the canonical source makes the check fail — mutation test", async () => {
   // A freshness check never observed failing is an assumption about the check, not evidence about
-  // the diagrams (Standard 29 R5). Reintroduce the drift, confirm it is caught, restore.
+  // the diagrams. Reintroduce the drift, confirm it is caught, restore.
   const source = path.join(ROOT, "docs/architecture.mmd");
   const original = await readFile(source, "utf8");
   try {
