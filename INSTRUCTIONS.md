@@ -76,9 +76,53 @@ One line in `project-policy.yml`:
 standardVersion: "1.0.0"
 ```
 
-This pins which rules apply to you. Without the pin, a rule published upstream would silently make your
-project non-compliant overnight. An unresolvable version is a **configuration error** — exit `2` — not
-a compliance failure.
+**This is declarative metadata, not a gate.** It is validated as semver, recorded, and reported in
+every verdict envelope so a reader knows which version of the standards you consider yourself held
+to. It is **not** used to select or filter rules: nothing compares a rule's `introducedIn` against it,
+so declaring `1.0.0` does not prevent a rule introduced in a later version from applying. An
+unresolvable version is a **configuration error** — exit `2` — not a compliance failure.
+
+What actually determines which rules run is the **tooling version** — the checkout of this repository
+that your CI executes. The two are separate concepts and are not mechanically coupled:
+
+| Concept | Question it answers | Where it lives | Does it gate rules? |
+| --- | --- | --- | --- |
+| Tool version | Which implementation and catalog am I executing? | The checked-out ref of this repository | **Yes** — the rules that exist are the rules in that checkout |
+| `standardVersion` | Which standards version does this project declare itself against? | `project-policy.yml` | No — declarative only |
+
+Whether they should eventually be coupled is an open question and a future innovation decision, not
+a defect to work around. Until then, **pin the checkout** and treat `standardVersion` as a statement
+of intent that a reviewer can compare against the tool version in the envelope.
+
+## Obtaining and pinning the tooling
+
+Do not vendor this repository into yours. Check it out in CI at an immutable ref, outside your source
+tree, so the standards machinery never becomes part of your project's topology:
+
+```yaml
+- uses: actions/checkout@v4                 # your repository
+
+- uses: actions/checkout@v4                 # the standards
+  with:
+    repository: mikeycdavis/InnovationStandards
+    ref: v1.0.1
+    path: .standards/innovation
+
+- run: node .standards/innovation/scripts/standards.mjs validate .
+```
+
+Nothing needs installing — Node ≥ 18 and no third-party dependencies, so there is no lockfile to
+reconcile and no supply chain to inherit.
+
+**A tag is immutable by policy; a commit SHA is immutable by construction.** `ref: v1.0.1` is the
+readable form and is the right default for a first adoption. Where a governance layer wants stronger
+guarantees it should record the release name alongside the commit the release resolved to, check out
+the SHA, and report the readable name — so a moved tag is detectable rather than silently followed.
+
+A submodule also works and is deliberately not recommended: it puts the standards implementation into
+every adopter's repository topology, requires submodule handling on every clone, and produces
+dependency-bump commits in a project that has no dependency on this code at runtime. This is CI
+governance tooling, not project source.
 
 ## Adding `project-policy.yml`
 
@@ -450,11 +494,16 @@ instead.
 ## Upgrading to a newer standards version
 
 1. Read [CHANGELOG.md](CHANGELOG.md) for everything that changed at your current version and above.
-2. Bump `standardVersion` in `project-policy.yml`.
-3. Re-validate the policy. A rule that no longer exists surfaces here.
-4. Re-run `validate` and classify every newly-applicable rule per *Classifying required /
+2. **Move the pinned ref** in your CI workflow to the new release. This is the step that actually
+   changes which rules you are evaluated against; the declaration in step 3 does not.
+3. Bump `standardVersion` in `project-policy.yml` to match, so the declaration and the tool version
+   agree. They are not coupled mechanically, so keeping them in step is a discipline rather than
+   something the tooling enforces — a mismatch is visible in the verdict envelope, which reports the
+   declared version while the checkout determines the rules.
+4. Re-validate the policy. A rule that no longer exists surfaces here.
+5. Re-run `validate` and classify every newly-applicable rule per *Classifying required /
    not-applicable / exception*.
-5. Record the upgrade if it changed anything material.
+6. Record the upgrade if it changed anything material.
 
 A new `required` or `forbidden` rule is a MAJOR change upstream; a new `recommended` rule is MINOR;
 removing a rule is MAJOR. Migration is incremental and non-destructive — you are not required to reach
@@ -474,6 +523,8 @@ so there are no aliases to resolve and none will be added in 1.x.
   invariant-class rule it is also reported by `innovation.integrity-invariant`.
 - **Do not upgrade an evidence level to clear a check.** Record the claim at the level its support
   actually carries. An honest `assumption` is worth more than a false `user-evidence`.
+- **Do not rely on `standardVersion` to hold your rule set steady.** It does not gate anything. Pin
+  the checked-out ref of this repository in CI; that is the pin that works.
 - **Do not copy the standards into a consuming repository.** Reference the version; keep declarations
   local. A copy forks with no merge path back.
 - **Do not fabricate user quotes, market sizes, or metrics.** No tooling here can detect a
@@ -502,5 +553,6 @@ standard that specifies it, and in [docs/architecture.md](docs/architecture.md).
 | No cross-repository portfolio scanning | `innovation.portfolio-overlap` checks that the author addressed overlap, not that they were right about it. Nothing scans your other projects, and two teams building the same thing in two repositories is invisible here |
 | A repository that keeps its proposals elsewhere gets no findings at all | Only files at `artifacts/innovation-proposals/NNNN-slug.md` are parsed. If your decisions live in a wiki, a ticket tracker, or a chat thread, the tooling reports nothing — and reports nothing rather than warning you that your decisions are undocumented. A clean run on a repository with no proposals means only that there was nothing to check |
 | `standards check` walks the whole repository to evaluate one proposal | The repository walk happens before the single-proposal filter, so checking one file costs a full scan. Noticeable on a large repository, and the drafting loop runs this command many times |
+| `standardVersion` does not gate rules | It is validated, recorded, and reported, but nothing compares a rule's `introducedIn` against it. Declaring `1.0.0` does not stop a rule introduced later from applying. What determines the rules you are evaluated against is the checkout of this repository your CI runs — pin that. Whether the two should be coupled is a future innovation decision, not a defect to route around |
 | `init` infers the project's mode from file presence | The mode it reports is `INFERRED`, not observed, and it can be wrong. It prints the evidence for the judgement and accepts `--mode` to override it, but it cannot tell a project whose decisions are undocumented from one whose proposals simply live somewhere it does not look |
 | Manual-review rules stay `not-evaluated` until somebody attests them | Eight of the thirty rules have no automated check. Nothing forces an attestation, so a project can run indefinitely with eight rules unexamined and a `COMPLIANT` verdict. The verdict names them every time, and that visibility is the only pressure the tooling applies |

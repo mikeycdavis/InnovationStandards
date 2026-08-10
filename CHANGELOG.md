@@ -25,6 +25,44 @@ Tightening what an existing rule means is the same class of change as adding one
 MAJOR. Loosening it, correcting a description, or improving a detector's precision without changing
 what the rule demands is a patch.
 
+## 1.0.1 — 2026-08-09
+
+**No normative change.** No standard, rule, level, assurance, or detector was touched. The catalog is
+byte-identical to 1.0.0 and a project pinned to either is evaluated identically.
+
+Documentation correction. 1.0.0's adopter guide told every reader that declaring `standardVersion`
+"pins which rules apply to you", and that was not true: nothing compares a rule's `introducedIn`
+against the declared version, so the declaration selects nothing. The protection it described is real
+but comes from a different layer — the checked-out ref of this repository — and 1.0.0 never documented
+how to pin that at all. Every command in the guide read `<standards-repo>/scripts/...`, a placeholder
+with no accompanying instruction for resolving it.
+
+An overstatement in the adopter-facing guide is the same class of failure as a rule claiming assurance
+its check cannot deliver, which is why this is a correction rather than a note.
+
+- Rewrote *Declaring the standards version* to state plainly that `standardVersion` is declarative
+  metadata — validated, recorded, and reported, but never used to select or filter rules.
+- Separated the two version concepts that 1.0.0 conflated: the **tool version** (the checkout, which
+  determines the rules that exist) and the **policy `standardVersion`** (a declaration of intent).
+  They are not mechanically coupled; whether they should be is a future innovation decision.
+- Added *Obtaining and pinning the tooling*: a CI checkout at an immutable ref, outside the adopter's
+  source tree, with the reasoning for preferring it over a submodule and a note that a tag is
+  immutable by policy while a commit SHA is immutable by construction.
+- Corrected the upgrade procedure, which had the adopter bump the declaration without moving the ref
+  — the step that actually changes anything.
+- Added the limitation to *Current limitations* and a matching entry to *What not to do*.
+- Added two regression tests. The first is coupled to the source: it fails if the guide claims version
+  gating while no code implements it, and relaxes automatically if gating is ever added, so it cannot
+  become a stale assertion someone deletes. The second requires the guide to document a pinned
+  acquisition mechanism at all.
+
+**Provenance of this finding.** It was discovered by the standards author while preparing the first
+adoption, not by an adopter. That distinction is recorded deliberately: it would be convenient later
+to describe this as "our first adopter found it", and it was not. No project had adopted anything when
+this surfaced. It is pre-adoption evidence about the distribution mechanism, and the claim this
+repository is still waiting on — that an independent party can understand and use these standards —
+remains unestablished.
+
 ## 1.0.0 — 2026-08-09
 
 Initial release. The public surface below is what 1.0.0 freezes; anything not listed is internal and

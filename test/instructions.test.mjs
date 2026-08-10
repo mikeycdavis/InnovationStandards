@@ -74,6 +74,7 @@ test("the guide covers every section an adopter needs", () => {
   for (const heading of [
     "What this repository is",
     "Declaring the standards version",
+    "Obtaining and pinning the tooling",
     "Adding `project-policy.yml`",
     "Validating the policy",
     "Writing an innovation proposal",
@@ -120,6 +121,63 @@ test("the limitations do not claim a gap that has since been closed", () => {
       "init works now; the limitations table is stale",
     );
   }
+});
+
+test("the documentation does not claim version gating the code does not implement", async () => {
+  // The v1.0.1 defect, made un-repeatable. INSTRUCTIONS.md told every adopter that declaring
+  // `standardVersion` "pins which rules apply to you" — but nothing compares a rule's `introducedIn`
+  // against it, so the declaration gated nothing and the real pin (the checked-out ref) was never
+  // documented at all. An overstatement in the adopter-facing guide is the same class of failure as
+  // a rule claiming assurance its check cannot deliver.
+  //
+  // Coupled to the source rather than asserted flatly: if gating is ever implemented, this test
+  // stops demanding the disclaimer instead of becoming a stale assertion someone has to delete.
+  const sources = await Promise.all(
+    ["compliance.mjs", "catalog.mjs", "standards.mjs"].map((f) => read(`scripts/${f}`)),
+  );
+  const gates = sources.some((s) => /introducedIn/.test(s) && /standardVersion/.test(s));
+
+  if (!gates) {
+    // Prose assertions run against a copy with markdown emphasis stripped. The disclaimer is written
+    // `**not** used to select or filter rules`, and a naive /not\s+used/ misses it — a false failure
+    // that would push the next person to weaken the assertion rather than fix the formatting.
+    const prose = GUIDE.replace(/\*+/g, "");
+
+    assert.doesNotMatch(
+      prose,
+      /pins which rules apply/i,
+      "the guide claims standardVersion selects rules, and no code does that",
+    );
+    assert.match(
+      prose,
+      /not used to select or filter rules/i,
+      "the guide must state plainly that standardVersion does not gate rules",
+    );
+    assert.match(
+      prose,
+      /introducedIn/,
+      "the guide should name the field that would do the gating, so the claim is checkable",
+    );
+  }
+});
+
+test("the mutation test for the gating disclaimer — the check can actually fail", () => {
+  // The assertion above is only worth having if it fails when the defect returns. Reintroducing
+  // 1.0.0's exact sentence into a copy of the guide must trip it.
+  const reintroduced = "This pins which rules apply to you.";
+  assert.throws(
+    () => assert.doesNotMatch(reintroduced, /pins which rules apply/i),
+    "the guard does not detect the sentence it exists to prevent",
+  );
+});
+
+test("the guide documents how an adopter obtains and pins the tooling", () => {
+  // Every command in the guide reads `<standards-repo>/scripts/...`. Without an acquisition
+  // mechanism that placeholder is unresolvable, and the first adopter has to invent one — most
+  // likely by copying, which the guide separately prohibits.
+  assert.match(GUIDE, /actions\/checkout/i, "no CI acquisition mechanism is documented");
+  assert.match(GUIDE, /ref:\s*v\d+\.\d+\.\d+/, "the documented checkout is not pinned to a release");
+  assert.match(GUIDE, /submodule/i, "the guide does not address the submodule alternative");
 });
 
 test("the documentation states the coverage split honestly and does not fold it into the verdict", () => {
