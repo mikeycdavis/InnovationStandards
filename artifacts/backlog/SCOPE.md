@@ -41,6 +41,49 @@ deliberate: synchronization semantics should not be introduced before there is e
 needed. The decision boundary above is enough, and a single transition (`build` → backlog item)
 is the only crossing point.
 
+## The first crossing — designed from a real case, not in advance
+
+On 2026-08-12 proposal [0004](../innovation-proposals/0004-init-mode-inference-safety.md) moved from
+`explore` to `build`. That is the first decision authorizing implementation since this backlog
+existed, and it is the event this document was waiting for: the transfer is designed here from one
+concrete case, with the deliberate consequence that it covers that case and is not claimed to cover
+cases nobody has seen. **No backlog item has been created for 0004 yet.** The design comes first.
+
+**Cardinality — one proposal authorizes one or many items, and 0004 shows why the answer cannot be
+fixed at one.** 0004 authorizes a correction to one defect, but its own evidence puts at least three
+separable pieces of work under that authorization: the detection change, the fixture pair its success
+criteria demand, and the pre-registration and re-run that E14 says the derived candidate still owes.
+Those can land separately and one can fail without the others. So the relation is **one proposal to
+one or more items**, and the shape that carries it is an item whose children are the work — for 0004,
+one feature with the leaves beneath it, not three unrelated leaves and not one item pretending the
+work is atomic.
+
+**Provenance — the authorizing decision is named on the item that owns the authorization, and not on
+every leaf.** For 0004 that is the feature. Repeating the proposal id on each leaf would state the
+same fact three times and let the copies disagree, which is the drift this boundary exists to
+prevent; recording it only on a distant ancestor would leave a reader of the leaf unable to find out
+why the work exists. The rule is: **the highest item whose entire subtree is authorized by that
+proposal names it, and nothing below repeats it.** Provenance is carried as ordinary evidence — the
+proposal's repository path, in the item's `evidence` list — because that is a path `backlog-reconcile`
+already resolves, and it needs no new field, no new schema, and no `trackedBy`.
+
+**Revision — a later revision of the proposal does not touch implementation status, in either
+direction.** 0004 already has a revision entry, so this is not speculative: the document was revised
+after work was authorized and may be revised again. Ownership transfers **one way at authorization**.
+The proposal remains the authoritative record of the decision; the backlog becomes authoritative for
+implementation liveness. Changing a backlog item's status never rewrites the proposal's decision, and
+revising a proposal's prose never mutates an item's status. If a revision withdraws the
+authorization — an outcome moving off `build` — that is a **new decision**, and the correct response
+is to mark the affected items `CANCELLED` with the revision cited as evidence, deliberately, in an
+edit a reader can see. Nothing propagates automatically, because an automatic propagation would be
+one system silently overwriting the other's state, which is the failure both of them exist to avoid.
+
+**What is still not built.** No mechanical check enforces any of the above. Nothing verifies that an
+item citing a proposal cites one that reached `build`, and nothing detects a backlog item that
+duplicates proposal liveness. That remains reviewer-detectable only, exactly as it was before — this
+section changes what the convention *is*, not how it is enforced. A check becomes worth writing when
+there is more than one crossing to check, and there is currently one.
+
 ## The asymmetry between these two histories is truthful
 
 The milestones recorded here (M0–M6) describe how the framework was implemented. They were **not**
