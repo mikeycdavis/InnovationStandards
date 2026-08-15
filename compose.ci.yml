@@ -32,6 +32,10 @@ services:
       LOCAL_CI_COMMIT: ${LOCAL_CI_COMMIT:-unknown}
       LOCAL_CI_BRANCH: ${LOCAL_CI_BRANCH:-unknown}
       LOCAL_CI_REPOSITORY: ${LOCAL_CI_REPOSITORY:-unknown}
+      # Whether the tree built into the image was exactly the tree of LOCAL_CI_COMMIT. Without this
+      # the record defaults to "unknown", which is the honest answer when it is not passed and the
+      # wrong one when it is known — so it is passed.
+      LOCAL_CI_TREE_STATE: ${LOCAL_CI_TREE_STATE:-unknown}
       LOCAL_CI_OUT: /app/artifacts/local-ci
 
     command: ["node", "ci/pipeline.mjs"]
