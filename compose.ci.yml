@@ -1,0 +1,55 @@
+# The ephemeral CI environment.
+#
+# Invoked only through scripts/ci.sh, which supplies a unique project name per run so that two
+# repositories — or two runs of this one — cannot collide, and so that teardown removes exactly the
+# resources this run created and nothing else. Do not `docker compose -f compose.ci.yml up` by hand
+# and expect the guarantees; the script is the interface.
+
+# Overridden per run by `docker compose -p`. Present so a bare invocation still lands in its own
+# project rather than in whatever the directory name happens to be.
+name: innovation-standards-ci
+
+services:
+  ci:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile
+    image: ${LOCAL_CI_IMAGE:-innovation-standards-ci:local}
+    init: true
+
+    # This pipeline reads files and runs Node. It has no reason to reach the network, so it cannot.
+    # A repository adding a database service replaces this with the default bridge network and adds
+    # the service below with a healthcheck; the wait step in scripts/ci.sh already handles that case.
+    network_mode: none
+
+    # No bind mounts. The sources are copied into the image at build time, and the result record is
+    # copied back out with `docker cp` after the run. Mounting the working tree would let a
+    # concurrent edit change what CI is testing, and would let the test suite — which writes to the
+    # source tree — modify the developer's checkout.
+    volumes: []
+
+    environment:
+      LOCAL_CI_COMMIT: ${LOCAL_CI_COMMIT:-unknown}
+      LOCAL_CI_BRANCH: ${LOCAL_CI_BRANCH:-unknown}
+      LOCAL_CI_REPOSITORY: ${LOCAL_CI_REPOSITORY:-unknown}
+      LOCAL_CI_OUT: /app/artifacts/local-ci
+
+    command: ["node", "ci/pipeline.mjs"]
+
+# A dependency service would be declared here, and named in `SERVICES` in ci/pipeline.mjs, e.g.:
+#
+#   db:
+#     image: mcr.microsoft.com/mssql/server:2022-latest@sha256:...
+#     environment:
+#       ACCEPT_EULA: "Y"
+#       MSSQL_SA_PASSWORD: ${LOCAL_CI_DB_PASSWORD:?set a throwaway password in the environment}
+#     healthcheck:
+#       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1'"]
+#       interval: 2s
+#       timeout: 5s
+#       retries: 30
+#
+# It would be reached only over this project's own network, on no published host port, with a
+# throwaway credential supplied from the environment rather than committed here, and it would be
+# destroyed with the project at the end of the run. This repository has no database, so none of that
+# is implemented — see docs/local-ci.md, "Databases and services".
