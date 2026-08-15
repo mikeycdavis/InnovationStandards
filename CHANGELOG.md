@@ -25,6 +25,25 @@ Tightening what an existing rule means is the same class of change as adding one
 MAJOR. Loosening it, correcting a description, or improving a detector's precision without changing
 what the rule demands is a patch.
 
+## Unreleased
+
+**No normative change.** No standard, rule, level, assurance, or detector was touched, and a project
+pinned to 1.0.1 is evaluated identically before and after.
+
+Development-process change only. This repository's CI pipeline now has one definition — `ci/pipeline.mjs`
+— which runs in a disposable Docker environment via `scripts/ci.sh`. `.github/workflows/ci.yml` calls
+that script instead of restating the seven checks in YAML, and `scripts/submit-pr.sh` refuses to push
+or open a pull request unless the exact commit being pushed is the one that passed. Recorded in
+[artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md](artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md);
+the developer-facing guide is [docs/local-ci.md](docs/local-ci.md).
+
+One repository behaviour changed. `npm test` was `node --test "test/*.test.mjs"`, a quoted glob that
+only Node 22 and later expand, while `package.json` declares `node >=18` and the workflow pinned Node
+20 — so the test step could not have passed on the runner it was configured for. It is now bare
+`node --test`, which uses Node's own discovery and finds the same 135 tests on Node 18 through 24.
+No test was skipped, disabled, or weakened; the count is identical. The defect was found by the first
+containerised run, which is the argument for containerising it.
+
 ## 1.0.1 — 2026-08-09
 
 **No normative change.** No standard, rule, level, assurance, or detector was touched. The catalog is
