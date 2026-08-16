@@ -20,6 +20,16 @@
 - **E6 [observation]** The correct mode was reachable only by the operator passing `--mode=undocumented-decisions`, which requires already knowing the answer the tool exists to supply (source: scripts/init.mjs)
 - **E7 [assumption]** Other repositories in this portfolio would be misclassified the same way. Consistent with their layouts and untested; one adopter is one data point.
 - **E8 [validated-conclusion]** Root-only detection produces false greenfield on a real repository, and the false greenfield suppresses the warning it exists to deliver (from: E1, E2, E4, E5)
+- **E9 [experiment-result]** The experiment recorded in the plan below was run on 2026-08-12 against the five pre-registered subjects. Of the six pre-registered candidates, exactly one — combined signals with no early return, counting prompt artifacts as prior work rather than as recorded decisions — classified all five correctly. Bounded recursion at depth 2 and depth 3 scored three of five, and git evidence scored four of five (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E10 [experiment-result]** Bounded recursion, alternative (a), does not satisfy this proposal's release objective on its own. On HouseDoc it moves the answer from `greenfield` to `existing-with-proposals` — still wrong, and wrong in a direction this proposal did not anticipate: rather than inviting a back-fill it asserts that decisions are already recorded (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E11 [experiment-result]** Git evidence cannot serve as the general mechanism. It is `UNAVAILABLE` on a directory that is not a repository, which `init` must support, and its shipped-work thresholds are declared rather than derived — a two-commit repository with three tracked files falls through them into `greenfield`. Tuning the thresholds until that case passes would be fitting to the test set (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E12 [technical-evidence]** Neither cost kill criterion is approached. Depth-2 detection costs about 1-2 ms on the largest subject and depth-3 about 4.5 ms across 39 directories, against a `standards validate` run orders of magnitude larger. No candidate requires a third-party dependency (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E13 [observation]** `EngineeringStandards` is misclassified today at the root, with no recursion involved: `package.json` is present so the greenfield return never fires, and `artifacts/prompts/` then routes it to `existing-with-proposals` for a repository holding zero proposals. This is a second misclassification of a second real repository by a second mechanism, and it is outside this proposal's release objective — it produces a wrong answer that is not `greenfield`. Recorded here because the experiment surfaced it; owned by proposal 0006 (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E14 [hypothesis]** A composition of bounded recursion with the no-early-return rule classified all six subjects correctly, including a monorepo case built specifically to falsify the winning pre-registered candidate. It is labelled a hypothesis and not an experiment result deliberately: it was derived after seeing the outcome, and one of the six subjects was constructed after seeing it too. It is a starting point for the implementation design and it is not confirmation of that design (source: artifacts/experiments/0004-mode-detection/RESULTS.md)
+- **E15 [experiment-result]** The derived candidate was pre-registered on 2026-08-12 against fourteen repositories it had never seen, with the prediction and the failure condition committed before the run. It failed: ten of fourteen correct, and the four errors — AICrowd, CritHappens, CrunchDAO, DPTB — were all `greenfield`, which the pre-registration named in advance as the failing direction (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
+- **E16 [experiment-result]** Three of those four repositories contain no file the marker list can name at any depth, and the fourth is recognised only by an incidental `package.json` inside a documentation tool rather than by the roughly 75,000 files that constitute the project. This is a defect distinct from the one E8 records: E8 says detection looks in the wrong place, and this says the marker list does not describe the world outside the ecosystems its author works in. Recursion cannot find a marker that is not there (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
+- **E17 [experiment-result]** Git evidence, eliminated in E11, scored highest on the held-out set at twelve of fourteen, with both failures being unavailability rather than a wrong answer. E11's conclusion was drawn from five subjects, three of which were this portfolio's own standards repositories, and it did not survive fourteen it had not seen. This is recorded as a correction to E11's generality, not as a recommendation: promoting the best-scoring candidate after seeing the scores is the error the pre-registration exists to prevent (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
+- **E18 [observation]** Today's implementation classifies one of fourteen unseen repositories correctly. Five of its thirteen errors are false `greenfield` and eight are false `existing-with-proposals`, the latter being the defect proposal 0006 owns (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
 
 ## Assumptions and uncertainty
 
@@ -92,8 +102,42 @@
 - **Cannibalization:** None. Nothing in the framework currently answers this question.
 - **Priority:** Above 0005. Both are real; this one fails toward fabricated history, which an invariant-class rule prohibits, while 0005 fails loudly and is trivially worked around by an adopter who sees the error.
 
+## Revision history
+
+### 2026-08-12 — the experiment was run and the outcome changed
+
+**What triggered it.** Nothing external. The `explore` outcome recorded on 2026-08-09 named an
+experiment that was cheap, fully specified, and runnable immediately, and it was run.
+
+**What changed in this document.** Evidence entries E9 through E14 were added and the outcome moved
+from `explore` to `build`. Nothing was removed: E1 through E8 stand as written, including E7, whose
+assumption that other repositories would be misclassified "the same way" is now known to be half
+right — they are misclassified, by a different mechanism, which E13 records and proposal 0006 owns.
+
+**What was deliberately not changed.** The release objective is untouched. The experiment surfaced a
+second defect, and folding it into this proposal's objective after observing the result would be the
+retrospective scope change Standard 7 R4 prohibits — so it left as [0006](0006-prompt-markers-are-not-recorded-decisions.md)
+instead. The MVP is still not named, for the reason given below.
+
 ## Decision
 
-- **Outcome:** explore
-- **Rationale:** The problem is established rather than suspected — E8 rests on the implementation and on an observed misclassification of a real repository, not on inference about what might happen. What is undecided is the remedy, and the five alternatives are not variants of one design: (a) through (c) improve the guess, while (d) and (e) reject the premise that the tool should guess. Choosing between improving detection and abolishing it is an architectural commitment about what this framework claims to know, and nothing available today settles it. `explore` rather than `build` because naming an MVP now would be selecting the design silently; `explore` rather than `defer` because the defect is confirmed and the experiment that discriminates between the alternatives is cheap, specified above, and can run immediately.
+- **Outcome:** build
+- **Rationale (2026-08-12, superseding the `explore` rationale preserved below):** The experiment
+  answered the question this proposal recorded as the blocker. One pre-registered candidate
+  classified all five pre-registered subjects correctly at negligible cost with no dependency, and
+  the two alternatives that looked most attractive were falsified rather than merely unpreferred —
+  E10 shows bounded recursion alone does not meet the objective, and E11 shows git evidence cannot be
+  the general mechanism. The architectural question that `explore` existed to settle is therefore
+  settled in the direction of improving detection rather than abolishing it, and alternatives (d) and
+  (e) are not taken.
+  **What is authorized is narrower than what the experiment found.** This decision authorizes a
+  correction to the false-greenfield defect, subject to preserving the distinction between prompt
+  artifacts and recorded innovation proposals. It does **not** authorize implementing the `a+c1`
+  composition. E14 is a hypothesis derived after the run against a subject built after the run, and
+  writing it into this decision would launder exploratory optimization into confirmatory evidence —
+  which is the silent evidence upgrade `innovation.no-silent-upgrade` exists to prevent, committed in
+  the decision record rather than in an evidence list. The implementation designs from E14; it is not
+  ratified by it.
+- **Decided:** 2026-08-12. The previous outcome and its rationale are preserved immediately below.
+- **Superseded rationale (`explore`, 2026-08-09):** The problem is established rather than suspected — E8 rests on the implementation and on an observed misclassification of a real repository, not on inference about what might happen. What is undecided is the remedy, and the five alternatives are not variants of one design: (a) through (c) improve the guess, while (d) and (e) reject the premise that the tool should guess. Choosing between improving detection and abolishing it is an architectural commitment about what this framework claims to know, and nothing available today settles it. `explore` rather than `build` because naming an MVP now would be selecting the design silently; `explore` rather than `defer` because the defect is confirmed and the experiment that discriminates between the alternatives is cheap, specified above, and can run immediately.
 - **Decided:** 2026-08-09
