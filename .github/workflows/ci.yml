@@ -23,8 +23,12 @@ jobs:
       # ci/pipeline.mjs. This workflow does not restate it. If you find yourself adding a step here
       # that runs a check, add it to ci/pipeline.mjs instead, or the local run and this run stop
       # meaning the same thing.
+      # Invoked through `bash` rather than as `./scripts/ci.sh`. The executable bit is set in the
+      # index, but it is one `git update-index` away from being lost by an editor or a Windows
+      # checkout, and the failure mode would be a CI job that dies on permission denied for reasons
+      # unrelated to the code. Naming the interpreter costs nothing and cannot rot.
       - name: Local CI pipeline (Docker)
-        run: ./scripts/ci.sh
+        run: bash ./scripts/ci.sh
 
       # Kept for a failed run: the machine-readable record names the check that failed and how long
       # each one took. Uploading it is not part of the gate — the gate is the step above.
