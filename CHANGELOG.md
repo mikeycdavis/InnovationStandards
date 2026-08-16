@@ -44,6 +44,17 @@ only Node 22 and later expand, while `package.json` declares `node >=18` and the
 No test was skipped, disabled, or weakened; the count is identical. The defect was found by the first
 containerised run, which is the argument for containerising it.
 
+Verification evidence, recorded because the arrangement above had not been observed working end to
+end when it was decided. The containerized workflow executed on a GitHub-hosted runner for the first
+time on pull request #2 and passed. Hosted Actions evaluated `refs/pull/2/merge` at `564d3ea`, whose
+tree `f3560d9` is identical to the tree of the locally verified head `f79be36`; the resulting `main`
+commit `3879a25` carries that same tree. Local CI verified the pushed head and hosted CI verified the
+merge artifact, which is the complement ADR 0006 describes.
+
+This is one observation, not a new guarantee. It confirms the design behaved as intended in this
+instance; it does not close the gap recorded in ADR 0006, which is a property of when each mechanism
+runs rather than of any single result.
+
 ## 1.0.1 — 2026-08-09
 
 **No normative change.** No standard, rule, level, assurance, or detector was touched. The catalog is
