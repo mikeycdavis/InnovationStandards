@@ -6,53 +6,36 @@ on:
   pull_request:
 
 jobs:
-  test:
+  ci:
+    # `runs-on: ubuntu-latest` is a GitHub-hosted runner. Replacing it with `runs-on: self-hosted`
+    # is the only change a self-hosted runner needs: the step below is the same command a developer
+    # runs locally, so there is no second pipeline to port.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      # There is no setup-node step and no install step. Node and everything else the pipeline needs
+      # come from the CI image built by ci/Dockerfile, which is the same image a developer gets
+      # locally. A `setup-node` here would mean GitHub tests against one Node and the developer
+      # against another, which is exactly the drift this arrangement removes.
+      #
+      # The pipeline itself — which checks run, in what order, and why — is defined once, in
+      # ci/pipeline.mjs. This workflow does not restate it. If you find yourself adding a step here
+      # that runs a check, add it to ci/pipeline.mjs instead, or the local run and this run stop
+      # meaning the same thing.
+      # Invoked through `bash` rather than as `./scripts/ci.sh`. The executable bit is set in the
+      # index, but it is one `git update-index` away from being lost by an editor or a Windows
+      # checkout, and the failure mode would be a CI job that dies on permission denied for reasons
+      # unrelated to the code. Naming the interpreter costs nothing and cannot rot.
+      - name: Local CI pipeline (Docker)
+        run: bash ./scripts/ci.sh
+
+      # Kept for a failed run: the machine-readable record names the check that failed and how long
+      # each one took. Uploading it is not part of the gate — the gate is the step above.
+      - name: Upload CI result record
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          node-version: "20"
-
-      # No install step. This repository has no third-party dependencies, by the decision recorded in
-      # artifacts/adr/0001-vendored-engine-standalone-repo.md. If an `npm ci` ever appears here, that
-      # decision changed — a supply-chain compromise in a tool that certifies compliance is a
-      # compromise of every certification it has issued.
-
-      # Proves the standards series has not silently changed shape. The inventory is reviewed and
-      # committed; this compares source extraction against it rather than re-deriving the count.
-      - name: Source inventory
-        run: npm run inventory
-
-      # Holds each standard to its own word: any block claiming to be verbatim source must be.
-      - name: Source fidelity
-        run: npm run fidelity
-
-      # Validates this repository's own project-policy.yml against schemas/project-policy.schema.json.
-      # Exit 2 (malformed policy) and exit 1 (a compliance condition such as an expired exception) are
-      # both failures here, and both are meant to be.
-      - name: Project policy
-        run: npm run policy
-
-      # Detects when Mermaid source and its derived copies fall out of sync. This compares text rather
-      # than rendering anything, which is what lets a zero-dependency repository enforce it at all.
-      - name: Diagram freshness
-        run: npm run diagrams
-
-      - name: Test
-        run: npm test
-
-      # This repository is audited by its own audit. Deliberately not --strict: that flag fails on
-      # warnings too, and the predictable result of a build broken by advisory findings is that
-      # someone disables the step. The gate on *errors* is the assertion in test/audit.test.mjs that
-      # this repository has no error-severity findings, which runs above.
-      - name: Audit this repository
-        run: npm run audit
-
-      # The gate. `validate` applies this repository's own policy and exits 1 on a required-rule
-      # failure or a BLOCKED_BY_INVARIANT verdict regardless of --strict, and 2 if the policy cannot
-      # be read. This is the command consuming projects are told to gate on, so it is the one this
-      # repository gates on.
-      - name: Validate this repository
-        run: npm run validate
+          name: local-ci-result
+          path: artifacts/local-ci/latest.json
+          if-no-files-found: ignore

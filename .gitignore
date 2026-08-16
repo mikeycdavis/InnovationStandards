@@ -1,4 +1,9 @@
 node_modules/
 *.log
+
+# Local CI verification records. Transient evidence of a run, not a durable repository artifact:
+# this repository's evidence-retention policy is about proposals and experiments, and a CI result is
+# neither. See docs/local-ci.md.
+artifacts/local-ci/
 .DS_Store
 Thumbs.db

@@ -1,0 +1,29 @@
+flowchart TB
+    subgraph developer["Developer machine"]
+        commit["git commit on a feature branch"]
+        submit["scripts/submit-pr.sh"]
+        ci["scripts/ci.sh"]
+    end
+
+    subgraph docker["Ephemeral Docker project instd-ci-RUNID"]
+        image["ci/Dockerfile — node pinned by digest, no .git, no network"]
+        pipeline["ci/pipeline.mjs — the 7 checks"]
+    end
+
+    subgraph github["GitHub"]
+        branch["pushed branch"]
+        pr["pull request"]
+    end
+
+    commit --> submit
+    submit -->|"1. clean tree, non-default branch"| sha1["record HEAD"]
+    sha1 --> ci
+    ci --> image
+    image --> pipeline
+    pipeline -->|"any check fails"| stop["exit 1 — nothing pushed"]
+    pipeline -->|"all 7 pass"| sha2["re-read HEAD"]
+    sha2 -->|"HEAD moved"| stop2["exit 1 — nothing pushed"]
+    sha2 -->|"HEAD unchanged"| push["push the recorded SHA by value"]
+    push --> branch
+    branch --> pr
+    pr -.->|"same scripts/ci.sh"| docker

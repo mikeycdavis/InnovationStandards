@@ -1,0 +1,27 @@
+# Keep the build context to the sources under test. Anything excluded here is unavailable to CI,
+# which is the point: a check that can only pass because of something on the developer's machine is
+# not a check.
+
+# History and credentials. The commit under test is passed in as LOCAL_CI_COMMIT instead.
+#
+# `.git` only — not `.gitignore`, which is a checked-in source file that tests assert against. An
+# earlier revision excluded both and the suite failed inside the container while passing outside it,
+# which is precisely the class of divergence containerising CI is supposed to remove.
+.git
+
+# Results of previous runs. Including them would let a stale record travel into a new image.
+artifacts/local-ci
+
+# Never present in this repository (no third-party dependencies), and excluded so that a stray
+# local install cannot silently become part of a CI run.
+node_modules
+
+# Agent and editor state. Not part of the repository's behaviour.
+.claude
+.vscode
+.idea
+
+# Build context noise.
+*.log
+.DS_Store
+Thumbs.db

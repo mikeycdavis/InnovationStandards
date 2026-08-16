@@ -267,12 +267,14 @@ schemas/             JSON Schema for project-policy.yml.
 scripts/             The CLI, the evaluation engine, and the integrity gates.
 templates/           What an adopting project copies.
 design/              The concept-map investigation and the CLI design.
-docs/                Architecture reference and canonical Mermaid sources.
+docs/                Architecture reference, local CI guide, canonical Mermaid sources.
 test/                Tests and fixtures.
+ci/                  The CI pipeline definition and its container image.
+compose.ci.yml       The ephemeral Docker environment CI runs in.
 artifacts/
   prompt/            The authored intent, untouched.
   prompts/           The numbered source of record the standards were written from.
-  adr/               Five decision records.
+  adr/               Six decision records.
   innovation-proposals/  Real proposals, evaluated by this repository against itself.
 ```
 
@@ -294,6 +296,22 @@ artifacts/
   — why the unit of evaluation is a proposal, not a repository.
 - [artifacts/adr/0005-invariant-class-and-blocked-verdict.md](artifacts/adr/0005-invariant-class-and-blocked-verdict.md)
   — invariant-class rules and the fifth status.
+- [artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md](artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md)
+  — why CI is defined once and run in Docker before a push, not in workflow YAML after one.
+
+## Verifying a change
+
+The pipeline is defined once, in [ci/pipeline.mjs](ci/pipeline.mjs), and runs in a disposable Docker
+environment. GitHub Actions runs the same script rather than a second copy of it.
+
+```bash
+./scripts/ci.sh          # run the seven checks in Docker
+./scripts/submit-pr.sh   # verify, then push and open a PR for exactly the commit that passed
+```
+
+The rule `submit-pr` enforces: **the commit pushed for a PR is exactly the commit that passed the
+complete local Docker CI pipeline.** A dirty tree, a failed check, or a `HEAD` that moved during the
+run all stop it, and nothing is pushed. See [docs/local-ci.md](docs/local-ci.md).
 
 ## Dogfooding
 
