@@ -12,7 +12,7 @@ jobs:
     # runs locally, so there is no second pipeline to port.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # There is no setup-node step and no install step. Node and everything else the pipeline needs
       # come from the CI image built by ci/Dockerfile, which is the same image a developer gets
@@ -34,7 +34,7 @@ jobs:
       # each one took. Uploading it is not part of the gate — the gate is the step above.
       - name: Upload CI result record
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: local-ci-result
           path: artifacts/local-ci/latest.json
