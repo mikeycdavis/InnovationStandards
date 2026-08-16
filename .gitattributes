@@ -1,0 +1,21 @@
+# Line endings, and why this file exists.
+#
+# The CI image is built from the working tree, not from git's object store. On Windows with
+# core.autocrlf=true - the default from Git for Windows' installer - git stores LF and checks out
+# CRLF, so the build context receives CRLF shell scripts. Git Bash tolerates them. Alpine's bash
+# does not: it reports `$'\r': command not found` and `set: pipefail: invalid option name`, and the
+# pipeline dies before running a single check.
+#
+# This was not hypothetical. It was found by rebuilding this branch from origin/main: the scripts
+# had been LF on disk since they were authored, and the first checkout that materialised them
+# through git turned them CRLF and broke five tests. Nothing in the committed blobs changed.
+#
+# `eol=lf` pins the working-tree form, so the build context is LF on every platform.
+# test/local-ci.test.mjs asserts it, which is what makes the guarantee survive someone deleting
+# this file.
+
+*.sh text eol=lf
+Dockerfile text eol=lf
+
+# PowerShell is the opposite case: these are Windows-only entry points, and CRLF is the native form.
+*.ps1 text eol=crlf

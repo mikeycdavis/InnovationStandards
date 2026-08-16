@@ -98,6 +98,21 @@ test("declared dependency services are the ones the orchestrator waits on", () =
   }
 });
 
+test("shell scripts reach the build context with LF endings", () => {
+  // The image is built from the working tree, so this reads the working tree deliberately rather
+  // than asking git what it stored. Git stores LF either way; on Windows with core.autocrlf=true it
+  // checks out CRLF, and Alpine's bash refuses a CRLF script outright - `$'\r': command not found`
+  // - so the pipeline dies before running a check. .gitattributes pins it; this fails if that stops
+  // being true, including inside the container, where a CRLF build context is exactly the defect.
+  for (const script of ["scripts/ci.sh", "scripts/submit-pr.sh", "ci/Dockerfile"]) {
+    const text = readFileSync(path.join(ROOT, script), "utf8");
+    assert.ok(
+      !text.includes("\r"),
+      `${script} has CRLF line endings in the working tree — bash in the CI image cannot run it. Check .gitattributes.`,
+    );
+  }
+});
+
 test("CI verification records are not committed", () => {
   assert.match(read(".gitignore"), /^artifacts\/local-ci\/$/m, "local CI records are not ignored");
 });
