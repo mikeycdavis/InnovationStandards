@@ -92,7 +92,7 @@ not accounted for. This is a genuine gap, documented rather than papered over, a
 argument for keeping the hosted workflow alive.
 
 **One repository behaviour changed.** `npm test` became bare `node --test`, which discovers the same
-135 tests and works on Node 18 through 24. The directory form `node --test test/` was tried first and
+131 tests and works on Node 18 through 24. The directory form `node --test test/` was tried first and
 rejected: it works on Node 20 and fails on Node 24, which would have moved the portability defect
 rather than removed it. This is a portability fix, not a relaxation — no test was skipped, disabled,
 or weakened, and the count is identical before and after.
