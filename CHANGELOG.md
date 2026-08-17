@@ -25,12 +25,48 @@ Tightening what an existing rule means is the same class of change as adding one
 MAJOR. Loosening it, correcting a description, or improving a detector's precision without changing
 what the rule demands is a patch.
 
-## Unreleased
+## 1.0.2 — 2026-08-16
 
 **No normative change.** No standard, rule, level, assurance, or detector was touched, and a project
-pinned to 1.0.1 is evaluated identically before and after.
+pinned to 1.0.1 is evaluated identically before and after. This is checkable rather than asserted —
+`git diff v1.0.1..v1.0.2 -- standards/ rules/` is empty, and that emptiness is the release class.
 
-Development-process change only. This repository's CI pipeline now has one definition — `ci/pipeline.mjs`
+**This is the first released InnovationStandards identity that contains `standards-adapter.json`.**
+The contract has been on `main` since `036f1f3`, and being on `main` is not being released: a consumer
+reads the declaration from the pinned checkout, so a contract no tag carries cannot be read by anyone
+pinning this pack. StandardsEnforcer recorded that as `BLOCKED_RELEASE_IDENTITY` on 2026-08-09 —
+*"a tag exists, but no truthful released identity currently contains the invocation contract"* — and
+declined to cherry-pick one onto `v1.0.1`, because no commit existed at which only the adapter had
+been added and a release note claiming otherwise would have been false. That is what this release
+fixes, and it is the reason to cut it now: the missing identity stopped being interoperability debt
+and became a concrete block that only a truthful tag can lift.
+
+The contract stays at `schemaVersion: "1.0.0"` deliberately. Adapter schema 1.1.0 adds a `{policy}`
+binding, forced by a pack whose evaluator resolves an absent policy to its own and grades the target
+against it. This pack's `validate` reads the target's `project-policy.yml` from the target root, and
+`test/adapter-contract.test.mjs` proves it across a checkout boundary. Declaring 1.1.0 would make this
+contract unreadable to any consumer built before 1.1.0 existed, in exchange for a binding this pack
+does not need.
+
+Release identity reconciled, and the disagreement was found from outside. `VERSION` read `1.0.1`,
+`package.json` read `1.0.0`, and `README.md` read `1.0.0` — three files declaring the release, two of
+them wrong, since 1.0.0. Nothing here noticed because nothing here reads `VERSION`; the only consumer
+is external, and StandardsEnforcer's interface inventory recorded the consequence rather than the
+typo: a consumer pinning an identity must pick one of these files, and while they disagree the pack
+tells different consumers different things. All three now read `1.0.2`, and
+[test/release-identity.test.mjs](test/release-identity.test.mjs) compares them structurally rather
+than pinning a literal, so it catches the next divergence without being edited by whoever cuts 1.0.3.
+
+**The dogfooded verdict is still `COMPLIANT`, and its composition changed.** 1.0.1 reported 26 passed,
+0 failed, 4 not-evaluated, 4 attested; 1.0.2 reports **22 passed, 0 failed, 8 not-evaluated, 0
+attested**. Four attestations were invalidated on 2026-08-09 when the proposal set they named grew,
+and were deliberately not renewed rather than re-digested against work no human had re-reviewed. The
+status is unchanged because a skip is never a pass and never a failure — which is the mechanism
+working, not a technicality. Four more rules are now established by nobody, and the verdict reports
+that beside itself instead of absorbing it. `README.md` had gone on publishing the old figures; it
+now publishes these, and states that nothing tests the paragraph.
+
+Development-process change only, below. This repository's CI pipeline now has one definition — `ci/pipeline.mjs`
 — which runs in a disposable Docker environment via `scripts/ci.sh`. `.github/workflows/ci.yml` calls
 that script instead of restating the seven checks in YAML, and `scripts/submit-pr.sh` refuses to push
 or open a pull request unless the exact commit being pushed is the one that passed. Recorded in
@@ -42,7 +78,9 @@ only Node 22 and later expand, while `package.json` declares `node >=18` and the
 20 — so the test step could not have passed on the runner it was configured for. It is now bare
 `node --test`, which uses Node's own discovery and finds the same 131 tests on Node 18 through 24.
 No test was skipped, disabled, or weakened; the count is identical. The defect was found by the first
-containerised run, which is the argument for containerising it.
+containerised run, which is the argument for containerising it. That 131 is the before-and-after
+count of *that change*, measured on the branch that made it, and not this release's suite size —
+tests have been added since, including in this release.
 
 Verification evidence, recorded because the arrangement above had not been observed working end to
 end when it was decided. The containerized workflow executed on a GitHub-hosted runner for the first

@@ -324,12 +324,21 @@ This repository is evaluated by its own tooling against its own
   — outcome `reject`. The alternative that would have avoided a duplicated engine, evaluated properly
   and turned down.
 
-Current verdict: **`COMPLIANT`** — 26 passed, 0 failed, 4 not-evaluated, 4 attested. The four
-not-evaluated rules are unattested on purpose. This repository has no portfolio to judge prioritization
-against, no roadmap presentation to inspect, no external standards regime to bypass, and no revision
-history of a release objective to compare. Attesting them would be assertion rather than evidence, and
-`not-evaluated` is the honest report.
+Current verdict: **`COMPLIANT`** — 22 passed, 0 failed, 8 not-evaluated, 0 attested. All eight
+manual-review rules are unattested, and that is a change from 1.0.1 rather than the original design.
+Four of them were attested then; those attestations were invalidated on 2026-08-09 when the proposal
+set they named grew, and they were deliberately not renewed rather than re-digested. The other four
+have never been attested: this repository has no portfolio to judge prioritization against, no roadmap
+presentation to inspect, no external standards regime to bypass, and no revision history of a release
+objective to compare.
 
-**Version 1.0.0** — see [CHANGELOG.md](CHANGELOG.md). Node ≥ 18, zero third-party dependencies, and CI
+The verdict is still `COMPLIANT` because a skip is never a pass and never a failure — which is the
+point. Eight rules are now unestablished by anyone rather than four, and the verdict says so beside
+itself instead of absorbing it.
+
+This paragraph is maintained by hand and nothing tests it. It was stale between 1.0.1 and 1.0.2, which
+is the argument for coupling it to a live run rather than a reason to trust the numbers above.
+
+**Version 1.0.2** — see [CHANGELOG.md](CHANGELOG.md). Node ≥ 18, zero third-party dependencies, and CI
 has no install step. That constraint is structural rather than aspirational: a supply-chain compromise
 in a tool that certifies compliance is a compromise of every certification it has issued.
