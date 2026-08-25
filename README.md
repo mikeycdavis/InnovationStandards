@@ -316,13 +316,19 @@ run all stop it, and nothing is pushed. See [docs/local-ci.md](docs/local-ci.md)
 ## Dogfooding
 
 This repository is evaluated by its own tooling against its own
-[project-policy.yml](project-policy.yml), over two real proposals:
+[project-policy.yml](project-policy.yml), over the six real proposals in
+[artifacts/innovation-proposals/](artifacts/innovation-proposals/):
 
-- [artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md](artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md)
-  — outcome `build`.
-- [artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md](artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md)
-  — outcome `reject`. The alternative that would have avoided a duplicated engine, evaluated properly
-  and turned down.
+- **0001** — outcome `build`. This repository's own new-project justification.
+- **0002** — outcome `reject`. The alternative that would have avoided a duplicated engine, evaluated
+  properly and turned down.
+- **0003** — outcome `defer`, revisited once when its `RevisitWhen` fired, and unchanged on review.
+- **0004** — outcome `build`, with implementation authorization narrowly scoped to the defect it
+  established.
+- **0005** and **0006** — outcome `explore`. Open questions, not pending work.
+
+Four outcomes across six proposals, and no outcome is privileged: a fully evidenced `reject` is
+evaluated exactly as a fully evidenced `build`. This list is maintained by hand.
 
 Current verdict: **`COMPLIANT`** — 22 passed, 0 failed, 8 not-evaluated, 0 attested. All eight
 manual-review rules are unattested, and that is a change from 1.0.1 rather than the original design.

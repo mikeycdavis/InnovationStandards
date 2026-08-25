@@ -2,8 +2,8 @@
  * The release identity this repository declares, checked for agreement across every file that
  * declares it.
  *
- * WHY THIS EXISTS. `VERSION` said `1.0.1`, `package.json` said `1.0.0`, and `README.md` said
- * `1.0.0`, simultaneously, from 1.0.1 until this test was written. Nothing here noticed, because
+ * WHY THIS EXISTS. `VERSION` said `1.0.1` while `package.json`, `README.md` and `PROJECT.md` all
+ * said `1.0.0`, simultaneously, from 1.0.1 until this test was written. Nothing here noticed, because
  * nothing here read `VERSION` at all — the only consumer is external. StandardsEnforcer's interface
  * inventory found it from outside and recorded the consequence rather than the typo:
  *
@@ -12,7 +12,17 @@
  *
  * That is the failure mode. A consumer that pins a release identity has to pick one of these files,
  * and while they disagree the pack is telling different consumers different things about which
- * release they are holding. Two of the three were wrong and neither was detectably wrong from here.
+ * release they are holding. Three of the four were wrong and none was detectably wrong from here.
+ *
+ * `PROJECT.md` WAS MISSING FROM THE FIRST VERSION OF THIS TABLE, AND THAT IS THE MORE USEFUL HALF OF
+ * THE RECORD. This file shipped for review covering three declaration sites, with a comment saying in
+ * as many words that a fourth site added without being listed here is the gap the table cannot close
+ * by itself. The fourth site already existed. Automated review found `PROJECT.md:171` declaring
+ * `1.0.0` on the same commit where every assertion below was green — a test that passed while the
+ * defect it names was still present in the tree, because its inventory was hand-built and incomplete.
+ *
+ * So read the guarantee narrowly. This proves the listed sites agree; it does not discover sites. The
+ * enumeration is the assumption, and it failed once already.
  *
  * WHAT THIS ASSERTS, AND WHAT IT DELIBERATELY DOES NOT. It compares the declarations to each other.
  * It does not pin them to a literal, because a test that hard-codes `1.0.2` has to be edited by
@@ -51,7 +61,7 @@ const SEMVER = /^\d+\.\d+\.\d+$/;
 /**
  * Every file that declares which release this is, with the extractor that reads it.
  *
- * Adding a fourth declaration site to the repository without adding it here is the gap this table
+ * Adding a further declaration site to the repository without adding it here is the gap this table
  * cannot close by itself. It is a list of the sites that exist, not a proof that no other exists.
  */
 const DECLARATIONS = {
@@ -61,6 +71,19 @@ const DECLARATIONS = {
     const { version } = JSON.parse(text);
     assert.ok(version, "package.json declares no version field");
     return version;
+  },
+
+  // Trailing full stop included in the pattern but not the capture: this file writes
+  // `**Version 1.0.2.**` where README writes `**Version 1.0.2**`, and capturing the stop would make
+  // the two disagree forever on a difference in punctuation.
+  "PROJECT.md": (text) => {
+    const lines = text.split("\n").filter((l) => /^\*\*Version \d[^*]*\*\*/.test(l));
+    assert.equal(
+      lines.length,
+      1,
+      `PROJECT.md carries ${lines.length} version declarations; this extractor reads exactly one`,
+    );
+    return lines[0].match(/^\*\*Version (\S+?)\.?\*\*/)[1];
   },
 
   "README.md": (text) => {

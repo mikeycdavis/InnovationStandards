@@ -168,23 +168,29 @@ sorts in numeric order.
 
 ## Current state
 
-**Version 1.0.0.** See [CHANGELOG.md](CHANGELOG.md) for what the release freezes.
+**Version 1.0.2.** See [CHANGELOG.md](CHANGELOG.md) for what each release changed.
 
 All fourteen standards are written and all thirty rules are catalogued across all fourteen of them.
 All five commands are operable. Twenty-two rules are machine-evaluated; the remaining eight are
 `manual-review` with `none` assurance and are established only by a recorded human attestation.
 
-**Dogfooded verdict: `COMPLIANT`** — 26 passed, 0 failed, 4 not-evaluated, 4 attested, evaluated over
-two real proposals: [0001](artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md),
-outcome `build`, and [0002](artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md),
-outcome `reject`.
+**Dogfooded verdict: `COMPLIANT`** — 22 passed, 0 failed, 8 not-evaluated, 0 attested, evaluated over
+six real proposals, 0001 through 0006, in
+[artifacts/innovation-proposals/](artifacts/innovation-proposals/). Their outcomes span `build`,
+`reject`, `defer` and `explore`, which is the decision model behaving as designed rather than a
+backlog of unfinished work.
 
-The four not-evaluated rules — `innovation.standards-non-bypass`,
-`innovation.no-silent-scope-change`, `innovation.brainstorm-not-roadmap`, and
-`innovation.prioritization-discipline` — are left unattested deliberately. This repository has no
-portfolio to judge prioritization against, no roadmap presentation to inspect, no external standards
-regime to bypass, and no revision history of a release objective to compare. Attesting them would be
-assertion rather than evidence, and `not-evaluated` is the honest report.
+All eight manual-review rules are unattested, and that is a change from 1.0.1 rather than the original
+design. Four — `innovation.no-fabricated-evidence`, `innovation.novelty-not-value`,
+`innovation.no-hidden-costs` and `innovation.no-sunk-cost-continuation` — were attested at 1.0.1 and
+lapsed on 2026-08-09 when the proposal set they named grew; they were deliberately not renewed rather
+than re-digested against work no human had re-reviewed. The other four —
+`innovation.standards-non-bypass`, `innovation.no-silent-scope-change`,
+`innovation.brainstorm-not-roadmap` and `innovation.prioritization-discipline` — have never been
+attested. This repository has no portfolio to judge prioritization against, no roadmap presentation to
+inspect, no external standards regime to bypass, and no revision history of a release objective to
+compare. Attesting any of the eight would be assertion rather than evidence, and `not-evaluated` is
+the honest report.
 
 Read that verdict the way the tool prints it: `COMPLIANT` means everything that was actually evaluated
 passed. It does not mean everything was checked, and it does not mean any idea recorded here is a good

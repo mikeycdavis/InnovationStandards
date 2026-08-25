@@ -48,14 +48,25 @@ against it. This pack's `validate` reads the target's `project-policy.yml` from 
 contract unreadable to any consumer built before 1.1.0 existed, in exchange for a binding this pack
 does not need.
 
-Release identity reconciled, and the disagreement was found from outside. `VERSION` read `1.0.1`,
-`package.json` read `1.0.0`, and `README.md` read `1.0.0` — three files declaring the release, two of
-them wrong, since 1.0.0. Nothing here noticed because nothing here reads `VERSION`; the only consumer
-is external, and StandardsEnforcer's interface inventory recorded the consequence rather than the
-typo: a consumer pinning an identity must pick one of these files, and while they disagree the pack
-tells different consumers different things. All three now read `1.0.2`, and
+Release identity reconciled, and the disagreement was found from outside. `VERSION` read `1.0.1`
+while `package.json`, `README.md` and `PROJECT.md` all read `1.0.0` — four files declaring the
+release, three of them wrong, since 1.0.0. Nothing here noticed because nothing here reads `VERSION`;
+the only consumer is external, and StandardsEnforcer's interface inventory recorded the consequence
+rather than the typo: a consumer pinning an identity must pick one of these files, and while they
+disagree the pack tells different consumers different things. All four now read `1.0.2`, and
 [test/release-identity.test.mjs](test/release-identity.test.mjs) compares them structurally rather
 than pinning a literal, so it catches the next divergence without being edited by whoever cuts 1.0.3.
+
+**`PROJECT.md` was missing from that test's first version, and the omission is worth recording rather
+than quietly fixed.** The test shipped for review covering three sites, carrying a comment that said a
+further site added without being listed would be the gap it could not close by itself. The fourth site
+already existed. Automated review found it on a commit where every assertion in that file was green —
+a test passing while the defect it names sat in the tree, because its inventory was hand-built. The
+enumeration is the assumption. It is now four sites and it is still an assumption.
+
+The adoption recipe in [INSTRUCTIONS.md](INSTRUCTIONS.md) moves to `ref: v1.0.2`, phrased to be
+pinned once the tag is published. Leaving it on `v1.0.1` would have told every first adopter to pin
+the one release that carries no adapter contract, which is the release this one exists to supersede.
 
 **The dogfooded verdict is still `COMPLIANT`, and its composition changed.** 1.0.1 reported 26 passed,
 0 failed, 4 not-evaluated, 4 attested; 1.0.2 reports **22 passed, 0 failed, 8 not-evaluated, 0
@@ -63,8 +74,15 @@ attested**. Four attestations were invalidated on 2026-08-09 when the proposal s
 and were deliberately not renewed rather than re-digested against work no human had re-reviewed. The
 status is unchanged because a skip is never a pass and never a failure — which is the mechanism
 working, not a technicality. Four more rules are now established by nobody, and the verdict reports
-that beside itself instead of absorbing it. `README.md` had gone on publishing the old figures; it
-now publishes these, and states that nothing tests the paragraph.
+that beside itself instead of absorbing it. `README.md` and `PROJECT.md` had both gone on publishing
+the old figures; both now publish these, and the README states that nothing tests the paragraph.
+
+Both had also gone on describing the dogfooded population as *two* proposals, listing 0001 and 0002,
+while six exist — a sentence sitting four lines above one explaining that attestations lapsed because
+the proposal set grew. Corrected to the actual six, with their outcomes: `build`, `reject`, `defer`,
+`build`, and two at `explore`. Four outcomes across six proposals, which is the decision model
+behaving as designed rather than a queue of unfinished work. Both lists are still maintained by hand;
+coupling them to a live run is not attempted here and is not authorized work.
 
 Development-process change only, below. This repository's CI pipeline now has one definition — `ci/pipeline.mjs`
 — which runs in a disposable Docker environment via `scripts/ci.sh`. `.github/workflows/ci.yml` calls
