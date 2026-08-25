@@ -105,7 +105,7 @@ tree, so the standards machinery never becomes part of your project's topology:
 - uses: actions/checkout@v4                 # the standards
   with:
     repository: mikeycdavis/InnovationStandards
-    ref: v1.0.1
+    ref: v1.0.2
     path: .standards/innovation
 
 - run: node .standards/innovation/scripts/standards.mjs validate .
@@ -114,8 +114,11 @@ tree, so the standards machinery never becomes part of your project's topology:
 Nothing needs installing — Node ≥ 18 and no third-party dependencies, so there is no lockfile to
 reconcile and no supply chain to inherit.
 
-**A tag is immutable by policy; a commit SHA is immutable by construction.** `ref: v1.0.1` is the
-readable form and is the right default for a first adoption. Where a governance layer wants stronger
+**A tag is immutable by policy; a commit SHA is immutable by construction.** `ref: v1.0.2` is the
+readable form and is the right default for a first adoption — pin it once the `v1.0.2` tag is
+published. It is the first released identity that carries `standards-adapter.json`, so an adopter
+whose governance layer invokes this pack through that contract needs `v1.0.2` or later; `v1.0.1`
+does not carry one. Where a governance layer wants stronger
 guarantees it should record the release name alongside the commit the release resolved to, check out
 the SHA, and report the readable name — so a moved tag is detectable rather than silently followed.
 

@@ -316,20 +316,35 @@ run all stop it, and nothing is pushed. See [docs/local-ci.md](docs/local-ci.md)
 ## Dogfooding
 
 This repository is evaluated by its own tooling against its own
-[project-policy.yml](project-policy.yml), over two real proposals:
+[project-policy.yml](project-policy.yml), over the six real proposals in
+[artifacts/innovation-proposals/](artifacts/innovation-proposals/):
 
-- [artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md](artifacts/innovation-proposals/0001-innovation-standards-standalone-repo.md)
-  — outcome `build`.
-- [artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md](artifacts/innovation-proposals/0002-share-scripts-via-npm-package.md)
-  — outcome `reject`. The alternative that would have avoided a duplicated engine, evaluated properly
-  and turned down.
+- **0001** — outcome `build`. This repository's own new-project justification.
+- **0002** — outcome `reject`. The alternative that would have avoided a duplicated engine, evaluated
+  properly and turned down.
+- **0003** — outcome `defer`, revisited once when its `RevisitWhen` fired, and unchanged on review.
+- **0004** — outcome `build`, with implementation authorization narrowly scoped to the defect it
+  established.
+- **0005** and **0006** — outcome `explore`. Open questions, not pending work.
 
-Current verdict: **`COMPLIANT`** — 26 passed, 0 failed, 4 not-evaluated, 4 attested. The four
-not-evaluated rules are unattested on purpose. This repository has no portfolio to judge prioritization
-against, no roadmap presentation to inspect, no external standards regime to bypass, and no revision
-history of a release objective to compare. Attesting them would be assertion rather than evidence, and
-`not-evaluated` is the honest report.
+Four outcomes across six proposals, and no outcome is privileged: a fully evidenced `reject` is
+evaluated exactly as a fully evidenced `build`. This list is maintained by hand.
 
-**Version 1.0.0** — see [CHANGELOG.md](CHANGELOG.md). Node ≥ 18, zero third-party dependencies, and CI
+Current verdict: **`COMPLIANT`** — 22 passed, 0 failed, 8 not-evaluated, 0 attested. All eight
+manual-review rules are unattested, and that is a change from 1.0.1 rather than the original design.
+Four of them were attested then; those attestations were invalidated on 2026-08-09 when the proposal
+set they named grew, and they were deliberately not renewed rather than re-digested. The other four
+have never been attested: this repository has no portfolio to judge prioritization against, no roadmap
+presentation to inspect, no external standards regime to bypass, and no revision history of a release
+objective to compare.
+
+The verdict is still `COMPLIANT` because a skip is never a pass and never a failure — which is the
+point. Eight rules are now unestablished by anyone rather than four, and the verdict says so beside
+itself instead of absorbing it.
+
+This paragraph is maintained by hand and nothing tests it. It was stale between 1.0.1 and 1.0.2, which
+is the argument for coupling it to a live run rather than a reason to trust the numbers above.
+
+**Version 1.0.2** — see [CHANGELOG.md](CHANGELOG.md). Node ≥ 18, zero third-party dependencies, and CI
 has no install step. That constraint is structural rather than aspirational: a supply-chain compromise
 in a tool that certifies compliance is a compromise of every certification it has issued.
