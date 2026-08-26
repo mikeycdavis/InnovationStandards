@@ -100,7 +100,7 @@
 - **Method:** Run each candidate detector — bounded recursion at depths 2 and 3, git commit and tracked-file counts, and combined-signals-without-early-return — against a fixed set: HouseDoc, InnovationStandards, EngineeringStandards, an empty directory, and a fresh `git init` with one README. Record every classification. The set deliberately includes two cases that must come out greenfield and three that must not.
 - **Supports proceeding:** One candidate classifies all five correctly, and its cost and dependency profile are acceptable.
 - **Does not support proceeding:** No candidate gets all five right, or the ones that do require a dependency or a walk this repository will not pay for. That result argues for alternative (d) or (e) — refusing to infer — and this proposal would return with that as its recommendation rather than a detection improvement.
-- **Outcome:** It supported proceeding, and the design derived from it was then falsified on a held-out set (E14, E15). The plan is preserved as written rather than rewritten, because what it asked and what it got are both part of the record.
+- **Result:** It supported proceeding, and the design derived from it was then falsified on a held-out set (E14, E15). The plan is preserved as written rather than rewritten, because what it asked and what it got are both part of the record.
 
 ### Second experiment — pre-registered 2026-08-26, not yet run
 
