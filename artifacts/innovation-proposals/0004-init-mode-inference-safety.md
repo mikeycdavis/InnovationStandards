@@ -30,6 +30,9 @@
 - **E16 [experiment-result]** Three of those four repositories contain no file the marker list can name at any depth, and the fourth is recognised only by an incidental `package.json` inside a documentation tool rather than by the roughly 75,000 files that constitute the project. This is a defect distinct from the one E8 records: E8 says detection looks in the wrong place, and this says the marker list does not describe the world outside the ecosystems its author works in. Recursion cannot find a marker that is not there (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
 - **E17 [experiment-result]** Git evidence, eliminated in E11, scored highest on the held-out set at twelve of fourteen, with both failures being unavailability rather than a wrong answer. E11's conclusion was drawn from five subjects, three of which were this portfolio's own standards repositories, and it did not survive fourteen it had not seen. This is recorded as a correction to E11's generality, not as a recommendation: promoting the best-scoring candidate after seeing the scores is the error the pre-registration exists to prevent (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
 - **E18 [observation]** Today's implementation classifies one of fourteen unseen repositories correctly. Five of its thirteen errors are false `greenfield` and eight are false `existing-with-proposals`, the latter being the defect proposal 0006 owns (source: artifacts/experiments/0004-mode-detection/HELD-OUT-RESULTS.md)
+- **E19 [experiment-result]** The two falsifiers 0004's success criteria call for were built and run against the shipping `detectMode` unchanged on 2026-08-26. Both fail: the HouseDoc shape and a bare monorepo each classify `greenfield`, and the genuinely-empty control correctly classifies `greenfield`. The runner exits non-zero and is expected to go green unedited once a correction exists. This converts E8 from a conclusion drawn about one observed repository into an executable falsification that any future design must clear (source: artifacts/experiments/0004-mode-detection/RED-DEMONSTRATION.md)
+- **E20 [observation]** All three of those cases emit the identical evidence string, `no implementation markers found`. A genuinely empty directory and a monorepo holding four source trees and two manifests are described to the operator in exactly the same words. The statement is true as written — nothing was found at the root — and it cannot be checked: nothing in the output separates *looked everywhere and found nothing* from *looked only at the root and found nothing*. This is why the wrong HouseDoc verdict was unnoticeable to a reader of its own evidence, and it is a defect in explanation rather than in classification (source: artifacts/experiments/0004-mode-detection/RED-DEMONSTRATION.md)
+- **E21 [observation]** Both falsifiers in E19 are satisfied by bounded recursion, which E10 and E15 falsified. Passing them is therefore a necessary condition on a design and not evidence for one; treating it as evidence would derive a design from the data it is then tested against, which is the error E14 and the first pre-registration exist to prevent (from: E10, E14, E15, E19)
 
 ## Assumptions and uncertainty
 
@@ -91,10 +94,25 @@
 
 ## Experiment plan
 
+### First experiment — run 2026-08-12, and superseded as the open question
+
 - **Question:** Which signal actually separates a repository that has shipped work from one that has not — and does any of them get all three modes right at once?
 - **Method:** Run each candidate detector — bounded recursion at depths 2 and 3, git commit and tracked-file counts, and combined-signals-without-early-return — against a fixed set: HouseDoc, InnovationStandards, EngineeringStandards, an empty directory, and a fresh `git init` with one README. Record every classification. The set deliberately includes two cases that must come out greenfield and three that must not.
 - **Supports proceeding:** One candidate classifies all five correctly, and its cost and dependency profile are acceptable.
 - **Does not support proceeding:** No candidate gets all five right, or the ones that do require a dependency or a walk this repository will not pay for. That result argues for alternative (d) or (e) — refusing to infer — and this proposal would return with that as its recommendation rather than a detection improvement.
+- **Outcome:** It supported proceeding, and the design derived from it was then falsified on a held-out set (E14, E15). The plan is preserved as written rather than rewritten, because what it asked and what it got are both part of the record.
+
+### Second experiment — pre-registered 2026-08-26, not yet run
+
+Full pre-registration, frozen before any subject is opened: [artifacts/experiments/0004-strategy-selection/PRE-REGISTRATION.md](../experiments/0004-strategy-selection/PRE-REGISTRATION.md).
+
+- **Question:** The first experiment asked which signal classifies best, and its answer did not survive fourteen unseen repositories. This one asks the question underneath it: is this objective better served by improving inference, or by refusing to infer when evidence is insufficient or contradictory? Alternatives (d) and (e) were declined on five subjects and have never been tested on a held-out set, so the premise every other alternative shares — that detection should guess at all — remains an assumption this proposal recorded on day one and has never examined.
+- **Method:** Six candidates — today's baseline, three inference strategies of which two have a primary signal that is not a filename, and two refusal strategies — frozen before any subject is opened, then run against sixteen held-out repositories no subject list has named, plus the three constructed cases from E19 as gates rather than as subjects. Every subject by candidate outcome is recorded as one of `correct`, `false-greenfield`, `false-recorded` or `refused`. Ground truth is established per subject with its reasoning, after the candidates are frozen and before the run.
+- **Supports proceeding with inference:** a candidate produces zero `false-greenfield` across all sixteen subjects, passes the three gates, reports evidence that distinguishes looked-everywhere-and-found-nothing from looked-only-at-the-root-and-found-nothing (E20), and adds no dependency at a cost below a full `standards validate`.
+- **Supports proceeding with refusal:** a candidate produces zero `false-greenfield` and zero `false-recorded`, still classifies a genuinely empty directory as `greenfield` without requiring an override, names what the operator must pass and what was inconclusive, and refuses on no more than half the subjects.
+- **Does not support proceeding:** neither class clears its own bar. That is a pre-registered outcome rather than a fallback: it returns this proposal to `explore` with the release objective unchanged and unmet, and leaves the `build` authorization open to withdrawal by the owner.
+- **Why the two bars differ, declared before the run:** a refusing strategy declines to produce the value an accuracy score is computed over. Scoring a refusal as a miss assumes the conclusion; scoring it as a hit makes refusing everything optimal. The harm ordering — `false-greenfield` worse than `false-recorded` worse than `refused` worse than `correct` — and both bars are fixed in the pre-registration for that reason, and no composite score is used. Weights chosen now would decide the outcome by arithmetic, and afterwards would be indistinguishable from weights chosen to produce it.
+- **What passing E19's falsifiers does not buy:** both are satisfied by bounded recursion, which E10 and E15 falsified. They are a disqualifying gate, never a scoring dimension (E21).
 
 ## Portfolio
 
@@ -118,6 +136,55 @@ right — they are misclassified, by a different mechanism, which E13 records an
 second defect, and folding it into this proposal's objective after observing the result would be the
 retrospective scope change Standard 7 R4 prohibits — so it left as [0006](0006-prompt-markers-are-not-recorded-decisions.md)
 instead. The MVP is still not named, for the reason given below.
+
+### 2026-08-26 — the design question is reopened; the objective is not
+
+**What triggered it.** [ST-01](../backlog/items/ST-01.md) falsified the design this proposal's
+`build` decision expected the implementation to be derived from, and [ST-03](../backlog/items/ST-03.md)
+then converted the defect itself from prose into executable falsification. The two results point in
+opposite directions and both are needed to see the state: the defect is more firmly established than
+it has ever been, and the design for correcting it is less established than it appeared on
+2026-08-12.
+
+**What changed in this document.** Evidence E19 through E21 were added, the existing experiment plan
+was placed under a heading naming it as the first, and a second experiment was pre-registered. Nothing
+was removed and nothing was revised. E14 still reads as a hypothesis, E17 still reads as a correction
+to E11's generality rather than a recommendation, and the first experiment plan stands exactly as
+written — what it asked and what it got are both part of the record.
+
+**What did not change, and this is the important half.** The **release objective is untouched**:
+prevent a repository with shipped work from being silently treated as `greenfield`. The second
+experiment decides *how* that is met, never *whether*. The **outcome remains `build`** for the same
+reason it was `build` before: the objective is authorized and the design is not. That distinction was
+already explicit in the rationale below — *"the implementation designs from E14; it is not ratified by
+it"* — and ST-02 has been `BLOCKED` on precisely that gap since 2026-08-12. Nothing about its status
+changes here, and nothing propagates on its own.
+
+**What is now open that was previously treated as settled.** The 2026-08-12 rationale recorded that
+*"the architectural question that `explore` existed to settle is therefore settled in the direction of
+improving detection rather than abolishing it, and alternatives (d) and (e) are not taken."* **That
+sentence is no longer supported by its evidence.** It rested on E9 — one candidate classifying five
+pre-registered subjects — and E15 falsified the design derived from that result on fourteen it had
+never seen. The sentence is deliberately left in place rather than edited: it was the honest reading
+on the day, and striking it would remove the record of a conclusion that outran its evidence. What
+follows is a correction to it, not a replacement of it.
+
+Alternatives (d) and (e) are therefore back in scope as candidates, on equal terms with the inference
+strategies and with a bar of their own, because they were declined on five subjects and have never
+been tested on a held-out set.
+
+**A trap recorded here rather than discovered later.** ST-03's two falsifiers are both satisfied by
+bounded recursion, which E10 and E15 falsified. Any argument of the form *"this design passes the
+falsifiers we have"* is a design derived from the data it is then tested against — the same error as
+E14, one level up. E21 records it and the pre-registration makes it a gate rather than a score.
+
+**What was deliberately not done.** No candidate was implemented or preferred. No subject was opened.
+[Proposal 0006](0006-prompt-markers-are-not-recorded-decisions.md) was not decided — subjects holding
+prompt artifacts and no proposals will have ground truth recorded as `AMBIGUOUS-0006`, which keeps
+the `false-greenfield` count well-defined without answering 0006's question. E20's observation about
+the evidence string was recorded as evidence and became a *criterion on the inference class only*,
+which is what an explanation defect is; it was not turned into a requirement on the implementation,
+because no implementation has been selected.
 
 ## Decision
 
