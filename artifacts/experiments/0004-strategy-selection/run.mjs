@@ -18,7 +18,9 @@
  *   --manifest-only   emit the manifest and exit. Safe before ground truth exists.
  *   --gates           run the three constructed cases. Safe before ground truth exists: they are
  *                     controls already on `main`, not held-out subjects.
- *   --subjects        run the sixteen. Requires GROUND-TRUTH.json.
+ *   --subjects        run the sixteen. Requires a GROUND-TRUTH.json that exists, matches the hash
+ *                     published in FREEZE.md, is committed, and carries a reason and evidence for
+ *                     every subject. See AMENDMENT-02.md.
  */
 
 import { createHash } from "node:crypto";
@@ -27,11 +29,16 @@ import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
-import { CANDIDATES, CANDIDATE_IDS, GREENFIELD, UNDOCUMENTED, REFUSED, UNAVAILABLE } from "./candidates.mjs";
+import { CANDIDATES, CANDIDATE_IDS, GREENFIELD, EXISTING, UNDOCUMENTED, REFUSED, UNAVAILABLE } from "./candidates.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, "../../..");
 const GROUND_TRUTH = path.join(HERE, "GROUND-TRUTH.json");
+const FREEZE = path.join(HERE, "FREEZE.md");
+
+/** The two non-mode ground-truth states. AMENDMENT-02.md forbids substituting either for the other. */
+const AMBIGUOUS = "AMBIGUOUS-0006";
+const INDETERMINATE = "INDETERMINATE";
 
 /**
  * Hashes are taken over newline-normalised text, never raw bytes.
@@ -139,21 +146,112 @@ function manifest() {
       "scripts/init.mjs": hashFile(path.join(REPO, "scripts/init.mjs")),
       "PRE-REGISTRATION.md": hashFile(path.join(HERE, "PRE-REGISTRATION.md")),
       "AMENDMENT-01.md": hashFile(path.join(HERE, "AMENDMENT-01.md")),
+      "AMENDMENT-02.md": hashFile(path.join(HERE, "AMENDMENT-02.md")),
       "GROUND-TRUTH.json": hashFile(GROUND_TRUTH),
     },
     subjects: SUBJECTS,
   };
 }
 
-/** The pre-registered four-outcome taxonomy. Ground truth `AMBIGUOUS-0006` never yields false-recorded. */
+/**
+ * The pre-registered four-outcome taxonomy.
+ *
+ * `AMBIGUOUS-0006` never yields false-recorded, but still counts false-greenfield: `greenfield` is
+ * wrong under both readings of 0006, so the harm remains measurable there.
+ *
+ * `INDETERMINATE` (AMENDMENT-02.md) yields nothing at all. Its label is unknown rather than merely
+ * undecided, so a `greenfield` answer on it might be right — counting it would manufacture the
+ * experiment's central statistic out of the inspector's inability to label. The check precedes every
+ * other branch, including refusal, so an excluded subject leaves the refusal count untouched too.
+ */
 function outcomeOf(actual, truth) {
+  if (truth === INDETERMINATE) return "indeterminate-not-scored";
   if (actual === UNAVAILABLE) return "UNAVAILABLE";
   if (actual === REFUSED) return "refused";
   if (actual === GREENFIELD && truth !== GREENFIELD) return "false-greenfield";
-  if (truth === "AMBIGUOUS-0006") return actual === GREENFIELD ? "false-greenfield" : "ambiguous-not-scored";
+  if (truth === AMBIGUOUS) return actual === GREENFIELD ? "false-greenfield" : "ambiguous-not-scored";
   if (actual === truth) return "correct";
   if (truth === UNDOCUMENTED) return "false-recorded";
   return "incorrect";
+}
+
+const LABELS = new Set([GREENFIELD, UNDOCUMENTED, EXISTING, AMBIGUOUS, INDETERMINATE]);
+
+/**
+ * Refuse to run against ground truth that is not frozen, not explained, or not in history.
+ *
+ * The ordering is apparatus frozen -> ground truth frozen -> candidate execution, and nothing may
+ * flow backward. `INDETERMINATE` is the state most able to carry a result backward: marking a
+ * subject indeterminate after seeing candidates disagree on it would launder a bad result into an
+ * exclusion, and the file would read identically to an honest one. So the freeze record is written
+ * first and this runner is made to obey it, rather than the runner reporting whatever it finds.
+ */
+function loadFrozenGroundTruth() {
+  const die = (msg) => { console.error(`REFUSING TO RUN.\n${msg}`); process.exit(2); };
+
+  if (!existsSync(GROUND_TRUTH)) {
+    die(
+      "GROUND-TRUTH.json does not exist.\n" +
+      "The pre-registration fixes the order: freeze candidates, freeze subjects, establish ground\n" +
+      "truth, run, record. Running a candidate against a subject before that subject is labelled\n" +
+      "voids the experiment. Establish ground truth first."
+    );
+  }
+
+  // Guard 2 — the published hash, not whatever happens to be on disk.
+  const actual = hashFile(GROUND_TRUTH);
+  const freeze = existsSync(FREEZE) ? norm(readFileSync(FREEZE, "utf8")) : "";
+  const published = freeze.match(/`GROUND-TRUTH\.json`\s*\|\s*`([0-9a-f]{64})`/)?.[1] ?? null;
+  if (!published) {
+    die(
+      "FREEZE.md records no sha256 for GROUND-TRUTH.json.\n" +
+      "Ground truth must be hashed and published before any candidate executes."
+    );
+  }
+  if (published !== actual) {
+    die(
+      "GROUND-TRUTH.json does not match the hash frozen in FREEZE.md.\n" +
+      `  frozen: ${published}\n  actual: ${actual}\n` +
+      "Either the labels were edited after the freeze, or the freeze record is stale. Both void the run."
+    );
+  }
+
+  // Guard 3 — labels a result cites must already be in history.
+  let dirty = "";
+  try {
+    dirty = execFileSync("git", ["-C", REPO, "status", "--porcelain", "--", GROUND_TRUTH],
+      { encoding: "utf8" }).trim();
+  } catch { die("git could not report the state of GROUND-TRUTH.json. Refusing to guess."); }
+  if (dirty) {
+    die(
+      "GROUND-TRUTH.json is modified against HEAD:\n" + `  ${dirty}\n` +
+      "Uncommitted ground truth cannot be run against — a label edited during a run would leave no trace."
+    );
+  }
+
+  const truth = JSON.parse(readFileSync(GROUND_TRUTH, "utf8"));
+
+  // The record shape AMENDMENT-02.md requires, checked rather than trusted.
+  const bad = [];
+  for (const name of SUBJECTS) {
+    const t = truth[name];
+    if (!t) { bad.push(`${name}: absent from GROUND-TRUTH.json`); continue; }
+    if (!LABELS.has(t.label)) { bad.push(`${name}: label ${JSON.stringify(t.label)} is not a ground-truth state`); }
+    if (!t.reason?.trim()) bad.push(`${name}: no reason recorded`);
+    if (!Array.isArray(t.evidence) || t.evidence.length === 0) bad.push(`${name}: no evidence recorded`);
+    if (t.label === INDETERMINATE && !t.assumptionRequired?.trim()) {
+      bad.push(`${name}: INDETERMINATE without assumptionRequired — an unexplained exclusion`);
+    }
+    if (t.label === AMBIGUOUS && t.promptArtifacts !== true) {
+      bad.push(`${name}: AMBIGUOUS-0006 without promptArtifacts:true — the 0006 condition is not asserted`);
+    }
+    if (t.label !== INDETERMINATE && t.assumptionRequired) {
+      bad.push(`${name}: assumptionRequired on a label that is not INDETERMINATE`);
+    }
+  }
+  if (bad.length > 0) die("GROUND-TRUTH.json is malformed:\n  " + bad.join("\n  "));
+
+  return { truth, sha256: actual };
 }
 
 function runGates() {
@@ -173,28 +271,25 @@ function runGates() {
 }
 
 function runSubjects() {
-  if (!existsSync(GROUND_TRUTH)) {
-    console.error(
-      "REFUSING TO RUN. GROUND-TRUTH.json does not exist.\n" +
-      "The pre-registration fixes the order: freeze candidates, freeze subjects, establish ground\n" +
-      "truth, run, record. Running a candidate against a subject before that subject is labelled\n" +
-      "voids the experiment. Establish ground truth first."
-    );
-    process.exit(2);
-  }
-  const truth = JSON.parse(readFileSync(GROUND_TRUTH, "utf8"));
+  const { truth, sha256: truthSha } = loadFrozenGroundTruth();
   const rows = [];
+  const population = {
+    groundTruthSha256: truthSha,
+    scoredSubjects: [], excludedIndeterminate: [], excludedAmbiguous0006: [], missing: [],
+  };
+
   for (const name of SUBJECTS) {
     const root = path.resolve(REPO, "..", name);
-    const label = truth[name]?.label ?? null;
+    const label = truth[name].label;
     if (!existsSync(root)) {
       rows.push({ subject: name, status: "MISSING" });
+      population.missing.push(name);
       continue;
     }
-    if (!label) {
-      rows.push({ subject: name, status: "NO-GROUND-TRUTH" });
-      continue;
-    }
+    if (label === INDETERMINATE) population.excludedIndeterminate.push(name);
+    else if (label === AMBIGUOUS) population.excludedAmbiguous0006.push(name);
+    else population.scoredSubjects.push(name);
+
     for (const id of CANDIDATE_IDS) {
       const r = CANDIDATES[id].run(root);
       rows.push({
@@ -203,7 +298,23 @@ function runSubjects() {
       });
     }
   }
-  return rows;
+
+  /**
+   * The refusal denominator, reported rather than assumed.
+   *
+   * The Class II bar is `refused` on at most half the subjects. An excluded subject leaves both
+   * numerator and denominator, so exclusions cannot loosen the threshold — otherwise every
+   * indeterminate subject would buy a refusing candidate half a free refusal.
+   */
+  const denominator = population.scoredSubjects.length + population.excludedAmbiguous0006.length;
+  population.refusalDenominator = denominator;
+  population.refusalThreshold = denominator / 2;
+
+  /** AMENDMENT-02.md: five indeterminate subjects means the population defeated the procedure. */
+  population.indeterminateLimit = 5;
+  population.populationDefeatedProcedure = population.excludedIndeterminate.length >= 5;
+
+  return { population, rows };
 }
 
 const args = new Set(process.argv.slice(2));

@@ -27,10 +27,31 @@ hashing, so these values hold in any checkout.
 | File | sha256 |
 | --- | --- |
 | `candidates.mjs` | `931d3da6e0efa6a3e20f4ff18005bee033bd2d0ba4d266e649fafcc890f01bd6` |
-| `run.mjs` | `ef6f3be716e67f4641991a95ce0857a19c18c813654c4fbf886e2af77961c754` |
+| `run.mjs` | `37a080cdca42aa84d7d55ddfdc0696f092bb3f1775a4e7925d6cb0fd511d790e` |
 | `PRE-REGISTRATION.md` | `9e1054f5be9bf42a7bdaea0841db71767c7a28b3e796109d6934cd4ff3dd19aa` |
 | `AMENDMENT-01.md` | `92525990331b62e132f17498596f365bfd4c75f6d27069175150844b2f3a8484` |
+| `AMENDMENT-02.md` | `163d571960bd5b82e121fda0800a27f133f32fb49390516e990bd9be1ccf0746` |
 | `scripts/init.mjs` | `2586fe8e0edee85dc48d8defd144fcc5dbd328cb92914b774ad8fdf5c1bf58f0` |
+
+`GROUND-TRUTH.json` has **no row yet**, because it does not exist. Its hash is added to this table at
+the ground-truth freeze, before any candidate is run against any subject — and `run.mjs --subjects`
+reads *this table* to decide whether the ground truth it has been handed is the frozen one.
+
+### One hash was superseded, and it is recorded rather than replaced
+
+`run.mjs` was `ef6f3be716e67f4641991a95ce0857a19c18c813654c4fbf886e2af77961c754` at the 2026-08-27
+candidate freeze, and is now `37a080cd…`. The change is
+[AMENDMENT-02.md](AMENDMENT-02.md): the `INDETERMINATE` ground-truth state, its shape checks, and the
+two additional freeze guards. **The old value is left standing above so the supersession is visible**
+— a freeze record that quietly overwrote a published hash would be indistinguishable from one
+covering up an edit, which is the exact property these hashes exist to deny.
+
+The edit is inside the permitted window and only that window. The pre-registration voids a run whose
+**candidates** are edited after step 3, and step 3 has not begun: `GROUND-TRUTH.json` does not exist,
+no subject has been opened, and no candidate has been executed against one. `candidates.mjs` is
+**unchanged** — `931d3da6…`, byte-identical to the candidate freeze — and so are all six per-candidate
+implementation hashes below. **No candidate's behaviour is affected by Amendment 02.** What changed is
+the apparatus that decides what may be *run*, tightened before the thing it constrains exists.
 
 `scripts/init.mjs` is listed because candidate 0 imports it rather than restating it. Its hash is
 **identical to the value recorded in
@@ -79,6 +100,28 @@ evidence of the red run and must not be edited to add an export. The duplication
 re-running the original script: it still reports **1 of 3 satisfied**, failing `housedoc-shape` and
 `bare-monorepo`, which is exactly what the duplicate produces for candidate 0.
 
+**5 — Amendment 02's guards fail closed, and each was made to fire.** Verified in a throwaway git
+repository holding copies of the apparatus, where all sixteen subject names resolve to nothing, so no
+held-out subject could be read. Every case exits 2:
+
+| Provoked | Runner's response |
+| --- | --- |
+| `GROUND-TRUTH.json` absent | refuses, naming the ordering it protects |
+| present, but no hash published in `FREEZE.md` | refuses — ground truth must be frozen before candidates execute |
+| a label edited after the hash was published | refuses, printing frozen and actual side by side |
+| the file uncommitted against `HEAD` | refuses — labels a result cites must already be in history |
+| `INDETERMINATE` with no `assumptionRequired` | refuses — an unexplained exclusion |
+| `AMBIGUOUS-0006` with no `promptArtifacts: true` | refuses — the 0006 condition is not asserted |
+| `assumptionRequired` on a non-`INDETERMINATE` label | refuses |
+| blank `reason`, empty `evidence`, or an unrecognised label | refuses, listing every offending subject |
+
+The exclusion arithmetic was exercised on the same fixture — 13 scored, 2 `INDETERMINATE`, 1
+`AMBIGUOUS-0006` — and produced a refusal denominator of **14** with a threshold of **7**, not 8:
+excluded subjects leave numerator and denominator together, so an exclusion cannot buy a refusing
+candidate a free refusal. Every candidate's row on an `INDETERMINATE` subject came back
+`indeterminate-not-scored`, including the ones that answered `greenfield` and the ones that reported
+`UNAVAILABLE`.
+
 ## Gate results at freeze time
 
 These are controls already on `main`, not held-out subjects, so running them contaminates nothing.
@@ -111,5 +154,7 @@ comparison.
 
 - **No subject has been opened.** Only directory names have ever been read.
 - **No ground truth exists.** `GROUND-TRUTH.json` is absent, which is why the runner refuses.
+- **No candidate was edited by Amendment 02.** `candidates.mjs` and all six implementation hashes are
+  byte-identical to the candidate freeze; only `run.mjs` changed, and its old hash is preserved above.
 - **No candidate has been run against a held-out subject.**
 - **Nothing in `scripts/`, `test/`, the backlog, or ST-02 has been touched.**
