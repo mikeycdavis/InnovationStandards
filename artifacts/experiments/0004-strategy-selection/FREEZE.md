@@ -33,9 +33,28 @@ hashing, so these values hold in any checkout.
 | `AMENDMENT-02.md` | `163d571960bd5b82e121fda0800a27f133f32fb49390516e990bd9be1ccf0746` |
 | `scripts/init.mjs` | `2586fe8e0edee85dc48d8defd144fcc5dbd328cb92914b774ad8fdf5c1bf58f0` |
 
-`GROUND-TRUTH.json` has **no row yet**, because it does not exist. Its hash is added to this table at
-the ground-truth freeze, before any candidate is run against any subject — and `run.mjs --subjects`
-reads *this table* to decide whether the ground truth it has been handed is the frozen one.
+## Ground truth, frozen 2026-08-27 — before any candidate was run against any subject
+
+| File | sha256 |
+| --- | --- |
+| `GROUND-TRUTH.json` | `6dcd84b94fa2867f197e80569ba13a648cdacee1b7fe34f382c497b702d2a8f8` |
+| `GROUND-TRUTH.md` | `b023c90020d7ac78f808bcbfcbe48b65f6267ad5e70eeccdf83344032279041a` |
+
+`run.mjs --subjects` reads the first of these two values out of *this table* and refuses to run
+against any ground truth that does not match it. The apparatus above was frozen and merged to `main`
+at `4d0ca23` **before** the sixteen subjects were opened; the labels were then established by
+inspection alone, with no candidate invoked. Reasoning is in [GROUND-TRUTH.md](GROUND-TRUTH.md).
+
+```
+AMBIGUOUS-0006          13
+undocumented-decisions   3
+greenfield               0
+existing-with-proposals  0
+INDETERMINATE            0
+```
+
+No subject was labelled `INDETERMINATE`. The state added by Amendment 02 went unused, which is
+recorded as it happened rather than justified after the fact.
 
 ### One hash was superseded, and it is recorded rather than replaced
 
@@ -152,8 +171,11 @@ comparison.
 
 ## What has not happened
 
-- **No subject has been opened.** Only directory names have ever been read.
-- **No ground truth exists.** `GROUND-TRUTH.json` is absent, which is why the runner refuses.
+- **The sixteen subjects have now been opened** — at the ground-truth freeze above, and not before it.
+  The claim in this document's opening line describes the *candidate* freeze, which is when the
+  hashes above the ground-truth section were taken, and it was true then.
+- **No candidate was edited after the subjects were opened.** `candidates.mjs` is still `931d3da6…`
+  and `run.mjs` is still `37a080cd…` — both unchanged since `4d0ca23`, which is on `main`.
 - **No candidate was edited by Amendment 02.** `candidates.mjs` and all six implementation hashes are
   byte-identical to the candidate freeze; only `run.mjs` changed, and its old hash is preserved above.
 - **No candidate has been run against a held-out subject.**
