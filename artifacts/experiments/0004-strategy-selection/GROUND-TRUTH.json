@@ -1,0 +1,218 @@
+{
+  "EMOS": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: EMOS.slnx",
+      "implementation on disk: src/",
+      "implementation on disk: frontend/",
+      "implementation on disk: tests/",
+      "implementation on disk: 310 source files"
+    ]
+  },
+  "Encore": {
+    "label": "undocumented-decisions",
+    "reason": "Implementation work is present on disk and there are no proposals, which is the definition of undocumented-decisions. artifacts/prompts/ is absent, so the AMBIGUOUS-0006 condition does not hold and this subject is fully scoreable.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/: absent",
+      "implementation on disk: Encore.slnx",
+      "implementation on disk: src/",
+      "implementation on disk: client/",
+      "implementation on disk: packages/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 420 source files"
+    ]
+  },
+  "ExcuseGenerator": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: app/",
+      "implementation on disk: components/",
+      "implementation on disk: lib/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 106 source files"
+    ]
+  },
+  "FantasyManager": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: backend/",
+      "implementation on disk: frontend/",
+      "implementation on disk: package.json",
+      "implementation on disk: 415 source files"
+    ]
+  },
+  "Forecast": {
+    "label": "undocumented-decisions",
+    "reason": "Implementation work is present on disk and there are no proposals, which is the definition of undocumented-decisions. artifacts/prompts/ is absent, so the AMBIGUOUS-0006 condition does not hold and this subject is fully scoreable.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/: absent",
+      "implementation on disk: Forecast.slnx",
+      "implementation on disk: Forecast/ (Python package: pipeline.py, src/api/, src/database/)",
+      "implementation on disk: Forecast.Database/",
+      "implementation on disk: 51 source files"
+    ]
+  },
+  "GoalBridge": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: packages/",
+      "implementation on disk: package.json",
+      "implementation on disk: 164 source files"
+    ]
+  },
+  "GradePal": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: app/ (Expo Router routes)",
+      "implementation on disk: src/",
+      "implementation on disk: package.json",
+      "implementation on disk: 45 source files"
+    ]
+  },
+  "GreenThumb": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: src/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 213 source files"
+    ]
+  },
+  "HowLongUntil": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: src/",
+      "implementation on disk: package.json",
+      "implementation on disk: 122 source files"
+    ]
+  },
+  "IceBox": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: IceBox.slnx",
+      "implementation on disk: IceBox.API/ (Controllers, Program.cs)",
+      "implementation on disk: IceBox.Data/",
+      "implementation on disk: IceBox.Services/",
+      "implementation on disk: IceBox.Mobile/",
+      "implementation on disk: IceBox.UnitTests/",
+      "implementation on disk: 32 source files"
+    ]
+  },
+  "LifeHub": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: src/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 260 source files"
+    ]
+  },
+  "LifeInWeeks": {
+    "label": "undocumented-decisions",
+    "reason": "Implementation work is present on disk and there are no proposals, which is the definition of undocumented-decisions. artifacts/prompts/ is absent, so the AMBIGUOUS-0006 condition does not hold and this subject is fully scoreable.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/: absent",
+      "implementation on disk: app/",
+      "implementation on disk: components/",
+      "implementation on disk: lib/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 98 source files"
+    ]
+  },
+  "Moneyball": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: moneyball/ (api, db, features, ingestion, backtesting)",
+      "implementation on disk: pyproject.toml",
+      "implementation on disk: frontend/",
+      "implementation on disk: Moneyball.Database/",
+      "implementation on disk: own package source excluding caches"
+    ]
+  },
+  "PvsNP": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: PvsNP.lean",
+      "implementation on disk: PvsNP/ \u2014 237 own .lean files excluding .lake/",
+      "implementation on disk: lakefile.toml",
+      "implementation on disk: lean-toolchain",
+      "implementation on disk: test/",
+      "implementation on disk: tools/"
+    ]
+  },
+  "ShouldILiveHere": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: src/",
+      "implementation on disk: tests/",
+      "implementation on disk: package.json",
+      "implementation on disk: 268 source files"
+    ]
+  },
+  "WorkSimulator": {
+    "label": "AMBIGUOUS-0006",
+    "promptArtifacts": true,
+    "reason": "Holds artifacts/prompts/original_prompt.md and no artifacts/innovation-proposals/*.md, which is the condition the pre-registration declared before any subject was opened. Whether that prompt artifact is a recorded innovation decision is proposal 0006's open question, and answering it here to make this subject scoreable would settle an undecided proposal by measurement. Implementation work is present on disk, so greenfield is wrong under both readings of 0006 and this subject still counts toward false-greenfield.",
+    "evidence": [
+      "artifacts/innovation-proposals/: absent",
+      "artifacts/prompts/original_prompt.md: present (1 file)",
+      "implementation on disk: src/",
+      "implementation on disk: package.json",
+      "implementation on disk: 84 source files"
+    ]
+  }
+}
