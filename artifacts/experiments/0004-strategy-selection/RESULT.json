@@ -1,0 +1,1368 @@
+{
+  "manifest": {
+    "experiment": "0004-strategy-selection",
+    "node": "v24.15.0",
+    "commit": "9321faaec6cbd5c766b15560a7064ba6e6cc9820",
+    "candidates": {
+      "0-baseline": {
+        "class": "baseline",
+        "signal": "root-only markers",
+        "sourceSha256": "a67351bb4638b719e12ee98c222bfd2cf1089131a3fcb2c1f7d24325b73e2a6b"
+      },
+      "1-recursion-no-early-return": {
+        "class": "I",
+        "signal": "markers at depth <= 2",
+        "sourceSha256": "0b71c8a8d62f6a0f79d36ecaf22b1c995172a3dcd0ee57c84594e12d2cb766f2"
+      },
+      "2-git-evidence": {
+        "class": "I",
+        "signal": "commit and tracked-file counts",
+        "sourceSha256": "55ec6c4d9bb18c5fa7704e147b4acba1cc9f109df6838a853bf393edfffd2f4c"
+      },
+      "3-content-shaped": {
+        "class": "I",
+        "signal": "substantive tracked files",
+        "sourceSha256": "3c13e3fdf36a4d0797459195cda07447f280fa30620b1ba4af9ba1338bfac22d"
+      },
+      "4-refuse-when-weak": {
+        "class": "II",
+        "signal": "agreement of S1, S2, S3",
+        "sourceSha256": "c07ac2b34cafd56233769eac1f710ba6b78f630eb61bfc8a588e0fc6b0920790"
+      },
+      "5-never-infer-greenfield": {
+        "class": "II",
+        "signal": "any positive signal, else verifiable emptiness",
+        "sourceSha256": "1b601a16aa15aba4b92e62f35c23a000cc246c0ae9e85c0ada806cbbd9e6fc39"
+      }
+    },
+    "files": {
+      "candidates.mjs": "931d3da6e0efa6a3e20f4ff18005bee033bd2d0ba4d266e649fafcc890f01bd6",
+      "run.mjs": "37a080cdca42aa84d7d55ddfdc0696f092bb3f1775a4e7925d6cb0fd511d790e",
+      "scripts/init.mjs": "2586fe8e0edee85dc48d8defd144fcc5dbd328cb92914b774ad8fdf5c1bf58f0",
+      "PRE-REGISTRATION.md": "9e1054f5be9bf42a7bdaea0841db71767c7a28b3e796109d6934cd4ff3dd19aa",
+      "AMENDMENT-01.md": "92525990331b62e132f17498596f365bfd4c75f6d27069175150844b2f3a8484",
+      "AMENDMENT-02.md": "163d571960bd5b82e121fda0800a27f133f32fb49390516e990bd9be1ccf0746",
+      "GROUND-TRUTH.json": "6dcd84b94fa2867f197e80569ba13a648cdacee1b7fe34f382c497b702d2a8f8"
+    },
+    "subjects": [
+      "EMOS",
+      "Encore",
+      "ExcuseGenerator",
+      "FantasyManager",
+      "Forecast",
+      "GoalBridge",
+      "GradePal",
+      "GreenThumb",
+      "HowLongUntil",
+      "IceBox",
+      "LifeHub",
+      "LifeInWeeks",
+      "Moneyball",
+      "PvsNP",
+      "ShouldILiveHere",
+      "WorkSimulator"
+    ]
+  },
+  "gates": [
+    {
+      "gate": "housedoc-shape",
+      "candidate": "0-baseline",
+      "expectation": "not-greenfield",
+      "mode": "greenfield",
+      "passed": false,
+      "scope": "root only",
+      "evidence": [
+        "no implementation markers found"
+      ]
+    },
+    {
+      "gate": "housedoc-shape",
+      "candidate": "1-recursion-no-early-return",
+      "expectation": "not-greenfield",
+      "mode": "undocumented-decisions",
+      "passed": true,
+      "scope": "depth <= 2, 6 directories visited, 14 names excluded",
+      "evidence": [
+        "markers: backend-api/app, backend-api/pyproject.toml, mobile-app/package.json"
+      ]
+    },
+    {
+      "gate": "housedoc-shape",
+      "candidate": "2-git-evidence",
+      "expectation": "not-greenfield",
+      "mode": "greenfield",
+      "passed": false,
+      "scope": "git metadata: 1 commits, 6 tracked files",
+      "evidence": [
+        "below declared thresholds (> 1 commits, > 4 files)"
+      ]
+    },
+    {
+      "gate": "housedoc-shape",
+      "candidate": "3-content-shaped",
+      "expectation": "not-greenfield",
+      "mode": "undocumented-decisions",
+      "passed": true,
+      "scope": "all tracked files examined, 3 substantive",
+      "evidence": [
+        "substantive files include: backend-api/app/main.py, database/schema.sql, infrastructure/main.tf"
+      ]
+    },
+    {
+      "gate": "housedoc-shape",
+      "candidate": "4-refuse-when-weak",
+      "expectation": "not-greenfield",
+      "mode": "refused",
+      "passed": true,
+      "scope": "S1 root, S2 depth <= 2 (6 dirs), S3 all tracked files",
+      "evidence": [
+        "signals disagree — implementation seen by [S2 depth<=2 markers, S3 substantive files], not by [S1 root markers]; pass --mode"
+      ]
+    },
+    {
+      "gate": "housedoc-shape",
+      "candidate": "5-never-infer-greenfield",
+      "expectation": "not-greenfield",
+      "mode": "undocumented-decisions",
+      "passed": true,
+      "scope": "S1 root, S2 depth <= 2 (6 dirs), S3 all tracked files",
+      "evidence": [
+        "at least one signal saw implementation"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "0-baseline",
+      "expectation": "undocumented-decisions",
+      "mode": "greenfield",
+      "passed": false,
+      "scope": "root only",
+      "evidence": [
+        "no implementation markers found"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "1-recursion-no-early-return",
+      "expectation": "undocumented-decisions",
+      "mode": "greenfield",
+      "passed": false,
+      "scope": "depth <= 2, 2 directories visited, 14 names excluded",
+      "evidence": [
+        "no markers at depth <= 2, no plans, no prompts"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "2-git-evidence",
+      "expectation": "undocumented-decisions",
+      "mode": "greenfield",
+      "passed": false,
+      "scope": "git metadata: 1 commits, 4 tracked files",
+      "evidence": [
+        "below declared thresholds (> 1 commits, > 4 files)"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "3-content-shaped",
+      "expectation": "undocumented-decisions",
+      "mode": "undocumented-decisions",
+      "passed": true,
+      "scope": "all tracked files examined, 2 substantive",
+      "evidence": [
+        "substantive files include: packages/api/src/index.js, packages/web/src/index.js"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "4-refuse-when-weak",
+      "expectation": "undocumented-decisions",
+      "mode": "refused",
+      "passed": false,
+      "scope": "S1 root, S2 depth <= 2 (2 dirs), S3 all tracked files",
+      "evidence": [
+        "signals disagree — implementation seen by [S3 substantive files], not by [S1 root markers, S2 depth<=2 markers]; pass --mode"
+      ]
+    },
+    {
+      "gate": "bare-monorepo",
+      "candidate": "5-never-infer-greenfield",
+      "expectation": "undocumented-decisions",
+      "mode": "undocumented-decisions",
+      "passed": true,
+      "scope": "S1 root, S2 depth <= 2 (2 dirs), S3 all tracked files",
+      "evidence": [
+        "at least one signal saw implementation"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "0-baseline",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "root only",
+      "evidence": [
+        "no implementation markers found"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "1-recursion-no-early-return",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "depth <= 2, 1 directories visited, 14 names excluded",
+      "evidence": [
+        "no markers at depth <= 2, no plans, no prompts"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "2-git-evidence",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "git metadata: 1 commits, 0 tracked files",
+      "evidence": [
+        "below declared thresholds (> 1 commits, > 4 files)"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "3-content-shaped",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "all tracked files examined, 0 substantive",
+      "evidence": [
+        "no substantive tracked file"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "4-refuse-when-weak",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "S1 root, S2 depth <= 2 (1 dirs), S3 all tracked files",
+      "evidence": [
+        "all signals agree: no implementation"
+      ]
+    },
+    {
+      "gate": "genuinely-empty",
+      "candidate": "5-never-infer-greenfield",
+      "expectation": "greenfield",
+      "mode": "greenfield",
+      "passed": true,
+      "scope": "S1 root, S2 depth <= 2 (1 dirs), S3 all tracked files; directory listing empty",
+      "evidence": [
+        "directory is verifiably empty — evidence of absence, not absence of evidence"
+      ]
+    }
+  ],
+  "subjects": {
+    "population": {
+      "groundTruthSha256": "6dcd84b94fa2867f197e80569ba13a648cdacee1b7fe34f382c497b702d2a8f8",
+      "scoredSubjects": [
+        "Encore",
+        "Forecast",
+        "LifeInWeeks"
+      ],
+      "excludedIndeterminate": [],
+      "excludedAmbiguous0006": [
+        "EMOS",
+        "ExcuseGenerator",
+        "FantasyManager",
+        "GoalBridge",
+        "GradePal",
+        "GreenThumb",
+        "HowLongUntil",
+        "IceBox",
+        "LifeHub",
+        "Moneyball",
+        "PvsNP",
+        "ShouldILiveHere",
+        "WorkSimulator"
+      ],
+      "missing": [],
+      "refusalDenominator": 16,
+      "refusalThreshold": 8,
+      "indeterminateLimit": 5,
+      "populationDefeatedProcedure": false
+    },
+    "rows": [
+      {
+        "subject": "EMOS",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "EMOS",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 10 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, frontend/src, frontend/package.json"
+        ]
+      },
+      {
+        "subject": "EMOS",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 52 commits, 487 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "EMOS",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 182 substantive",
+        "evidence": [
+          "substantive files include: Directory.Build.props, Directory.Packages.props, EMOS.slnx"
+        ]
+      },
+      {
+        "subject": "EMOS",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "EMOS",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "0-baseline",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "no recorded innovation decisions found"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "depth <= 2, 16 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, scripts/lib"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "2-git-evidence",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "git metadata: 19 commits, 478 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "3-content-shaped",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "all tracked files examined, 412 substantive",
+        "evidence": [
+          "substantive files include: Encore.slnx, artifacts/diagrams/auth-registration.svg, artifacts/diagrams/ci-pipeline.svg"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "4-refuse-when-weak",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "S1 root, S2 depth <= 2 (16 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "Encore",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "S1 root, S2 depth <= 2 (16 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: lib, app, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 16 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: lib, app, package.json, tests/lib"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 30 commits, 188 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 141 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, Dockerfile.ci, Dockerfile.ci.dockerignore"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (16 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "ExcuseGenerator",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (16 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 14 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: package.json, analytics/app, backend/src, frontend/src, frontend/package.json, scripts/lib"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 113 commits, 470 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 366 substantive",
+        "evidence": [
+          "substantive files include: analytics/Dockerfile, analytics/app/__init__.py, analytics/app/distributions.py"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (14 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "FantasyManager",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (14 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "0-baseline",
+        "truth": "undocumented-decisions",
+        "mode": "greenfield",
+        "outcome": "false-greenfield",
+        "scope": "root only",
+        "evidence": [
+          "no implementation markers found"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "depth <= 2, 6 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: Forecast/src, Forecast/pyproject.toml"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "2-git-evidence",
+        "truth": "undocumented-decisions",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "git metadata",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "3-content-shaped",
+        "truth": "undocumented-decisions",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "tracked files",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "4-refuse-when-weak",
+        "truth": "undocumented-decisions",
+        "mode": "refused",
+        "outcome": "refused",
+        "scope": "S1 root, S2 depth <= 2 (6 dirs), S3 unavailable",
+        "evidence": [
+          "signals disagree — implementation seen by [S2 depth<=2 markers], not by [S1 root markers]; pass --mode"
+        ]
+      },
+      {
+        "subject": "Forecast",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "S1 root, S2 depth <= 2 (6 dirs), S3 unavailable",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 8 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: package.json"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 21 commits, 247 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 198 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, apps/web/e2e/admin-hierarchies.spec.ts, apps/web/e2e/ai-disabled.spec.ts"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "GoalBridge",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, app, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 14 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, app, package.json"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "git metadata",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "tracked files",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (14 dirs), S3 unavailable",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "GradePal",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (14 dirs), S3 unavailable",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 8 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, src/lib, src/app"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 3 commits, 300 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 74 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, eslint.config.mjs, next.config.ts"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "GreenThumb",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 10 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, scripts/lib, src/lib"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 37 commits, 186 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 156 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, artifacts/diagrams/architecture-reference.svg, artifacts/diagrams/architecture.svg"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "HowLongUntil",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "greenfield",
+        "outcome": "false-greenfield",
+        "scope": "root only",
+        "evidence": [
+          "no implementation markers found"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 8 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: IceBox.Mobile/lib"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "git metadata",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "UNAVAILABLE",
+        "outcome": "UNAVAILABLE",
+        "scope": "tracked files",
+        "evidence": [
+          "not a git repository"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "refused",
+        "outcome": "refused",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 unavailable",
+        "evidence": [
+          "signals disagree — implementation seen by [S2 depth<=2 markers], not by [S1 root markers]; pass --mode"
+        ]
+      },
+      {
+        "subject": "IceBox",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (8 dirs), S3 unavailable",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 12 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, src/lib, src/app"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 36 commits, 346 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 307 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, artifacts/diagrams/ai-gates.mmd, artifacts/diagrams/ai-gates.svg"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "LifeHub",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "0-baseline",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: lib, app, package.json",
+          "no recorded innovation decisions found"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "depth <= 2, 12 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: lib, app, package.json, scripts/lib"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "2-git-evidence",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "git metadata: 47 commits, 219 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "3-content-shaped",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "all tracked files examined, 111 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, app/error.tsx, app/favicon.ico"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "4-refuse-when-weak",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "LifeInWeeks",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "undocumented-decisions",
+        "mode": "undocumented-decisions",
+        "outcome": "correct",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: pyproject.toml",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 17 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: pyproject.toml, frontend/src, frontend/package.json, scripts/lib"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 499 commits, 859 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 652 substantive",
+        "evidence": [
+          "substantive files include: Moneyball.Database/DML/004_add_kalshi_tables.sql, Moneyball.Database/DML/20250314_add_tournament_coefficients.sql, Moneyball.Database/DML/20250314_add_tournament_teams_stats.sql"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (17 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "Moneyball",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (17 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "greenfield",
+        "outcome": "false-greenfield",
+        "scope": "root only",
+        "evidence": [
+          "no implementation markers found"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 11 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: scripts/lib"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 352 commits, 286 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 248 substantive",
+        "evidence": [
+          "substantive files include: PvsNP.lean, PvsNP/Audit.lean, PvsNP/AuditManifest.lean"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "refused",
+        "outcome": "refused",
+        "scope": "S1 root, S2 depth <= 2 (11 dirs), S3 all tracked files",
+        "evidence": [
+          "signals disagree — implementation seen by [S2 depth<=2 markers, S3 substantive files], not by [S1 root markers]; pass --mode"
+        ]
+      },
+      {
+        "subject": "PvsNP",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (11 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 12 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, server/src, src/lib, src/app"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 30 commits, 328 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 282 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, artifacts/diagrams/alerts-lifecycle.mmd, artifacts/diagrams/alerts-lifecycle.svg"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "ShouldILiveHere",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (12 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "0-baseline",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "existing-with-proposals",
+        "outcome": "ambiguous-not-scored",
+        "scope": "root only",
+        "evidence": [
+          "implementation markers: src, package.json",
+          "prompt artifacts: artifacts/prompts"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "1-recursion-no-early-return",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "depth <= 2, 10 directories visited, 14 names excluded",
+        "evidence": [
+          "markers: src, package.json, scripts/lib"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "2-git-evidence",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "git metadata: 24 commits, 195 tracked files",
+        "evidence": [
+          "above declared thresholds"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "3-content-shaped",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "all tracked files examined, 94 substantive",
+        "evidence": [
+          "substantive files include: Dockerfile, ci/Dockerfile, ci/Dockerfile.dockerignore"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "4-refuse-when-weak",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "all signals agree: implementation present"
+        ]
+      },
+      {
+        "subject": "WorkSimulator",
+        "candidate": "5-never-infer-greenfield",
+        "truth": "AMBIGUOUS-0006",
+        "mode": "undocumented-decisions",
+        "outcome": "ambiguous-not-scored",
+        "scope": "S1 root, S2 depth <= 2 (10 dirs), S3 all tracked files",
+        "evidence": [
+          "at least one signal saw implementation"
+        ]
+      }
+    ]
+  }
+}
