@@ -242,7 +242,7 @@ Decision below together with the edit the convention requires and the reason it 
 ## Decision
 
 - **Outcome:** explore
-- **Rationale (2026-08-27, superseding the `build` rationale preserved below):** The `build`
+- **Rationale (2026-09-04, superseding the `build` rationale preserved below):** The `build`
   outcome rested on a claim that is now falsified. It recorded the architectural question as settled
   "in the direction of improving detection rather than abolishing it", and the only experiment to put
   that question to held-out data supports **no** inference candidate under the bar written for
