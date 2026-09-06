@@ -195,7 +195,14 @@ the evidence string was recorded as evidence and became a *criterion on the infe
 which is what an explanation defect is; it was not turned into a requirement on the implementation,
 because no implementation has been selected.
 
-### 2026-08-27 — the second experiment ran, and the `build` rationale did not survive it
+### 2026-09-04 — the outcome is reopened, on the 2026-08-27 experiment result
+
+**Two dates, deliberately not merged.** The strategy-selection experiment ran and was recorded on
+**2026-08-27**; the record was merged to `main` the same day. The reconsideration below was made and
+recorded on **2026-09-04**, after the owner reviewed that result and directed the decision be
+reopened. No decision was taken on 2026-08-27 — that day produced evidence, not a decision, and the
+two are dated separately because collapsing them would backdate a decision onto the experiment that
+prompted it.
 
 **What triggered it.** The strategy-selection experiment executed once against frozen apparatus and
 frozen ground truth. Its result is not the one either pre-written proceeding condition describes:
@@ -212,11 +219,25 @@ work from being silently treated as `greenfield`. E23 makes it firmer than it ha
 false `greenfield` on unseen repositories, measured rather than inferred. What moved is the design
 direction, which the `build` rationale asserted was settled and which E29 shows is not.
 
+**Why the 2026-08-26 separation no longer holds.** That revision kept the outcome at `build` and
+separated *authorization of the objective* from *selection of a design*: the objective was
+authorized, the design was not. That separation was available only because the outcome stayed
+`build`. `SCOPE.md` ties authorization to that outcome and to nothing else — authorization is
+carried by the proposal reaching `build`, and a backlog item's provenance is the proposal path in
+its `evidence` list. So the distinction survives any amount of design uncertainty and does **not**
+survive the outcome moving. On 2026-08-26 the design was unresolved *inside* a live authorization;
+here the authorization itself lapses, because the rationale that produced it is falsified (E29) and
+no replacement rationale is available that the evidence supports. The objective remains worth
+pursuing and is no longer authorized as implementation work — those are now two different
+statements, where on 2026-08-26 they were one.
+
 **What was deliberately not done.** No seventh candidate was designed. Class I failing on a cost
 clause is a standing invitation to propose a cheaper inference candidate, and doing that in the same
 step as reading the result would derive a design from the data it would then be tested against —
 the error the first pre-registration exists to prevent, recurring a second time. Proposal 0006 was
-not decided despite E28 showing it affects thirteen of sixteen subjects. ST-02 was not modified.
+not decided despite E28 showing it affects thirteen of sixteen subjects. No backlog item was
+modified — including the four this outcome change affects under `SCOPE.md`, which are named in the
+Decision below together with the edit the convention requires and the reason it is not made here.
 
 ## Decision
 
@@ -246,11 +267,26 @@ not decided despite E28 showing it affects thirteen of sixteen subjects. ST-02 w
   unexercised refusal behaviour in E27 has been tested, or when 0006 is decided, since E28 shows its
   answer changes the correct label on thirteen of sixteen subjects and therefore what any candidate
   is being scored against.
-- **Effect on [ST-02](../backlog/items/ST-02.md):** it remains `BLOCKED` and is **not withdrawn
-  here.** Its authorization derived from the `build` outcome; with that outcome superseded, the
-  pre-registration's own words apply — the authorization is "open to withdrawal by the owner".
-  Withdrawing it is an owner's decision, not a consequence an experiment gets to enact on its own.
-- **Decided:** 2026-08-27. The previous outcome and its rationale are preserved immediately below.
+- **Effect on the backlog — this outcome withdraws the authorization, and the required edits are
+  not made here.** [`artifacts/backlog/SCOPE.md`](../backlog/SCOPE.md) is explicit: *"If a revision
+  withdraws the authorization — an outcome moving off `build` — that is a **new decision**, and the
+  correct response is to mark the affected items `CANCELLED` with the revision cited as evidence,
+  deliberately, in an edit a reader can see."* Moving from `build` to `explore` is exactly that
+  transition, so the authorization is **withdrawn**, not merely "open to withdrawal". The affected
+  items are [FE-08](../backlog/items/FE-08.md), which carries 0004's authorization as the highest
+  item whose entire subtree the proposal authorizes, and its three stories
+  [ST-01](../backlog/items/ST-01.md) `COMPLETE`, [ST-02](../backlog/items/ST-02.md) `BLOCKED` and
+  [ST-03](../backlog/items/ST-03.md) `READY`.
+  **None of those four items is modified by this revision**, and their statuses are unchanged. The
+  owner's instruction authorized reopening this Decision and did not authorize backlog changes;
+  SCOPE.md also states that nothing propagates automatically, precisely so that one system cannot
+  silently overwrite the other's state. The convention is therefore **cited as it stands and left
+  unsatisfied**, rather than rewritten to fit this revision or enacted without authorization. **This
+  proposal and the backlog are inconsistent until the owner acts**, and that inconsistency is
+  recorded here rather than hidden: no mechanical check detects it, so a green gate run is not
+  evidence that it has been resolved.
+- **Decided:** 2026-09-04, on evidence recorded 2026-08-27. The previous outcome and its rationale
+  are preserved immediately below.
 - **Superseded rationale (`build`, 2026-08-12, which itself superseded the `explore` rationale preserved further below):** The experiment
   answered the question this proposal recorded as the blocker. One pre-registered candidate
   classified all five pre-registered subjects correctly at negligible cost with no dependency, and
