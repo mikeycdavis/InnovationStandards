@@ -1,70 +1,25 @@
-# Backlog
+# This backlog now lives in GitHub Issues
 
-<!-- GENERATED FILE - do not edit by hand. Re-run the backlog script after changing anything in items/. -->
+The item files that were here were migrated into GitHub Issues on 2026-09-18 and removed. Issues are
+now the only home for this repository's work items; nothing here is maintained.
 
-Work on this project classified with the Extended Agile Hierarchy. Every item is a file in
-[`items/`](./items/); its YAML frontmatter is the source of truth and this page is derived from it.
+- **The work:** https://github.com/mikeycdavis/InnovationStandards/issues
+- **The mapping:** [`github-mapping.json`](./github-mapping.json) records every legacy item id
+  against the issue number and id it became, so `ST-01` and friends still resolve.
+- **What this backlog records, and what it does not:** [`SCOPE.md`](./SCOPE.md), unchanged. It is
+  policy rather than item data, and proposal 0004 cites it.
 
-**8 of 10 leaf items complete — 80%**
+## Reading it
 
-```
-████████████████████████████████░░░░░░░░  80%
-```
+| The old way | Now |
+| --- | --- |
+| `status:` frontmatter | The issue's open/closed state, plus a `status:` label |
+| `parent:` frontmatter | A GitHub sub-issue link |
+| `type:` frontmatter | A `level:` label |
+| `evidence:` frontmatter | Links in the issue body, and `Closes #N` from a pull request |
+| The generated tracker | GitHub's own issue views |
 
-## Status
+**An open issue does not mean actionable.** `BLOCKED`, `DEFERRED` and `IN_REVIEW` are all open, so
+the `status:` label is what separates open work from executable work.
 
-| Status | Items |
-| --- | ---: |
-| ○ Not started | 1 |
-| ◔ Ready | 2 |
-| ◑ In progress | 2 |
-| ◒ Blocked | 1 |
-| ● Complete | 9 |
-| **Total** | **15** |
-
-## The hierarchy
-
-| Level | Prefix | Count | Answers |
-| --- | --- | ---: | --- |
-| Theme | `TH-` | 1 | Which enduring area of value is this? |
-| Initiative | `IN-` | 1 | What outcome are we pursuing there? |
-| Epic | `EP-` | 2 | What large body of work delivers it? |
-| Feature | `FE-` | 8 | What shippable slice of that epic? |
-| Story | `ST-` | 3 | What user-visible change, roughly one PR? |
-| Task | `TA-` | 0 | What technical step inside a story? |
-
-## Progress by theme
-
-| Theme | Progress | Done | Remaining |
-| --- | --- | ---: | ---: |
-| [TH-01 Executable governance for innovation decisions](./items/TH-01.md) | `███████████░░░` 80% | 8 | 2 |
-
-## In flight
-
-- ◑ [IN-01](./items/IN-01.md) — A standalone, dependency-free innovation standards pack
-- ◒ [ST-02](./items/ST-02.md) — Correct the false-greenfield classification in detectMode
-- ◑ [TH-01](./items/TH-01.md) — Executable governance for innovation decisions
-
-## Ready to pick up
-
-- ◔ [FE-08](./items/FE-08.md) — The false-greenfield correction authorized by proposal 0004
-- ◔ [ST-03](./items/ST-03.md) — Add the regression and falsifier coverage 0004's success criteria require
-
-## Everything
-
-- ◑ **[TH-01](./items/TH-01.md)** Executable governance for innovation decisions _(8/10)_
-  - ◑ **[IN-01](./items/IN-01.md)** A standalone, dependency-free innovation standards pack _(8/10)_
-    - ● **[EP-01](./items/EP-01.md)** The v1.0.0 baseline — design, engine, standards, evaluator, tests, docs _(7/7)_
-      - ● **[FE-01](./items/FE-01.md)** M0 — Design before code, recorded as a concept map and ADRs
-      - ● **[FE-02](./items/FE-02.md)** M1 — Vendor the engine, fix rule identity, erect the gates before content
-      - ● **[FE-03](./items/FE-03.md)** M2 — The 14 standards, authored in three reviewed batches
-      - ● **[FE-04](./items/FE-04.md)** M3 — Rule catalog, then policy schema and the first real policy together
-      - ● **[FE-05](./items/FE-05.md)** M4 — Adapted evaluator, domain CLI, and dogfooding from the first working command
-      - ● **[FE-06](./items/FE-06.md)** M5 — Fixtures and tests, every check mutation-tested
-      - ● **[FE-07](./items/FE-07.md)** M6 — Documentation, CI, and the seven-command release gate
-    - ○ **[EP-02](./items/EP-02.md)** Post-1.0.0 corrections to `standards init` _(1/3)_
-      - ◔ **[FE-08](./items/FE-08.md)** The false-greenfield correction authorized by proposal 0004 _(1/3)_
-        - ● **[ST-01](./items/ST-01.md)** Pre-register the derived candidate and re-run it before implementing from it
-        - ◒ **[ST-02](./items/ST-02.md)** Correct the false-greenfield classification in detectMode
-        - ◔ **[ST-03](./items/ST-03.md)** Add the regression and falsifier coverage 0004's success criteria require
-
+The full contract is in the ClaudeSkills repository, as `GITHUB-SCHEMA.md`.
