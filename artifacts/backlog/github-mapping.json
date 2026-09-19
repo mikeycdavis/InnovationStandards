@@ -108,5 +108,9 @@
       "state": "open",
       "parent": null
     }
-  }
+  },
+  "authority": "github",
+  "switchedAt": "2026-09-19",
+  "verifiedBy": "fidelity check: 15/15 items agree on id, type, title, status and parent; 0 conflicts",
+  "recovery": "The issues are the record. This file maps every legacy id to its issue number and id. To recover the file backlog, restore the item files from this repository's git history at the commit that removed them, then set authority back to \"files\"."
 }
