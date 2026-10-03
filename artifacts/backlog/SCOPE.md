@@ -104,11 +104,12 @@ dogfooding the artifact as it was built. They are genuine, and they are not mile
 | Not recorded | Post-v1.0.0 commits (see below); anything governed by a proposal |
 
 **Evidence is recorded as commit SHAs, not pull request URLs.** This repository began with direct
-commits to `main` and has since landed work by pull request: `origin/main` holds 14 merge commits
-(`git rev-list --merges --count origin/main`; newest #29 `c8ef601`, #28 `3e4f682`, #12 `e7dd6a7`).
-`backlog-reconcile`'s two PR-dependent checks can therefore run here; the baseline's evidence is SHAs
-because it predates those merges. The checks that run on SHAs — parent/child closure, and whether cited evidence resolves — are
-the ones used.
+commits to `main`. Its 14 merge commits (`git rev-list --merges --count origin/main`; newest #29
+`c8ef601`, #28 `3e4f682`, #12 `e7dd6a7`) all come after the v1.0.0 baseline `a75d532`.
+`backlog-reconcile`'s two PR-dependent checks need complete git history and read pull requests only
+from an item's Evidence section. Merge-commit subjects now exist, so they are no longer ruled out
+here, but this baseline cites SHAs, so they have no pull request to match. The checks that run on
+SHAs — parent/child closure, and whether cited evidence resolves — are the ones used.
 
 **Post-v1.0.0 work is not yet represented here.** The commits after `a75d532` include a release
 correction, provenance cleanup, citation fixes, an adoption record, and two commits authored by a
