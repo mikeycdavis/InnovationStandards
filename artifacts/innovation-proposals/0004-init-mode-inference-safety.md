@@ -34,6 +34,13 @@
 - **E20 [observation]** All three of those cases emit the identical evidence string, `no implementation markers found`. A genuinely empty directory and a monorepo holding four source trees and two manifests are described to the operator in exactly the same words. The statement is true as written — nothing was found at the root — and it cannot be checked: nothing in the output separates *looked everywhere and found nothing* from *looked only at the root and found nothing*. This is why the wrong HouseDoc verdict was unnoticeable to a reader of its own evidence, and it is a defect in explanation rather than in classification (source: artifacts/experiments/0004-mode-detection/RED-DEMONSTRATION.md)
 - **E21 [observation]** Both falsifiers in E19 are satisfied by bounded recursion, which E10 and E15 falsified. Passing them is therefore a necessary condition on a design and not evidence for one; treating it as evidence would derive a design from the data it is then tested against, which is the error E14 and the first pre-registration exist to prevent (from: E10, E14, E15, E19)
 - **E22 [experiment-result]** E21 is false as written, and this corrects it. Running the six frozen strategy-selection candidates against E19's three constructed gates shows the `a+c1` composition — bounded recursion at depth <= 2, the depth that composition actually declares — classifying `bare-monorepo` as `greenfield`. Its manifests sit at `packages/api/package.json`, which is depth 3; a depth-2 walk reaches `packages/` and stops. Only recursion bounded at depth 3 or deeper satisfies both falsifiers. E21's conclusion survives on narrower grounds — passing the gates is still necessary and still not evidence for a design — but its premise overstated what depth buys (source: artifacts/experiments/0004-strategy-selection/AMENDMENT-01.md) (from: E19, E21)
+- **E23 [experiment-result]** The second experiment ran once on 2026-08-27 against the sixteen held-out subjects, with the apparatus frozen and merged first and ground truth frozen and hashed before any candidate executed. Today's shipping `detectMode` produced three `false-greenfield` — Forecast, IceBox and PvsNP — each carrying substantial implementation work on disk. E7's assumption that other repositories in this portfolio would be misclassified the same way is no longer an assumption (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E24 [experiment-result]** No inference candidate cleared the Class I bar. Bounded recursion at depth <= 2 was disqualified by the `bare-monorepo` gate, as E22 predicted. Git evidence was disqualified by two gates before the run and was executed anyway rather than dropped after the fact. The content-shaped candidate cleared every gate with zero `false-greenfield` and scope-distinguishing evidence, and failed on cost alone: a median of 144.7 ms on the largest subject against a 107 ms `standards validate`, with the two measured ranges not overlapping. That is this proposal's own third kill criterion, applied as written (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E25 [experiment-result]** Both refusal candidates cleared the Class II bar: zero `false-greenfield`, zero `false-recorded`, `genuinely-empty` classified `greenfield` without an override, and refusals within the declared threshold. The experiment narrowed Class II to two candidates and separated neither from the other (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E26 [observation]** The two class bars were not symmetric, and the asymmetry was outcome-determinative. Class I's bar carries a cost clause and a dependency clause; Class II's carries neither. The surviving refusal candidate costs a median of about 110 ms and up to 204 ms on the largest subject, and would fail the very clause that eliminated the surviving inference candidate if that clause applied to it. The asymmetry was fixed in the pre-registration before any subject was opened, so it stands and the result is recorded under it — but it is the single clause separating the two survivors, which means E25 and E24 together do not establish that refusal outperforms inference (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E27 [observation]** Two limitations bound E25 and E24. The candidate that never infers `greenfield` refused on none of the sixteen, so the Class II clause requiring a refusal to name what the operator must pass and what was inconclusive was satisfied vacuously and remains unexercised. Separately, the git-evidence and content-shaped candidates reported `UNAVAILABLE` on three subjects because of the host machine's git `safe.directory` ownership check rather than any property of those subjects, so their zero-`false-greenfield` counts rest on thirteen exercised subjects rather than sixteen. Both are evidence gaps and neither is a hidden success (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E28 [observation]** Thirteen of the sixteen held-out subjects hold `artifacts/prompts/` and no innovation proposals, in a set drawn without looking. This is evidence about how prevalent proposal 0006's open question is in this portfolio, and deciding 0006 would change the correct label on thirteen of sixteen real repositories. It is deliberately not used to decide 0006: the shipping baseline classified twelve of them `existing-with-proposals` and every other candidate answered `undocumented-decisions`, so the candidates embody both readings, and the labels were held `AMBIGUOUS-0006` precisely so that measurement could not settle an undecided proposal. Owned by proposal 0006 (source: artifacts/experiments/0004-strategy-selection/RESULTS.md)
+- **E29 [validated-conclusion]** The rationale the 2026-08-12 `build` decision rests on is falsified. That decision recorded the architectural question as settled "in the direction of improving detection rather than abolishing it", with alternatives (d) and (e) not taken. The only experiment to test that question on held-out data supports no inference candidate under the bar written for inference, and supports both refusal candidates under the bar written for refusal. This falsifies the stated basis of the `build` outcome; it does not establish the opposite direction, because E26 shows the comparison that separated them was not symmetric (from: E23, E24, E25, E26, E27)
 
 ## Assumptions and uncertainty
 
@@ -103,7 +110,7 @@
 - **Does not support proceeding:** No candidate gets all five right, or the ones that do require a dependency or a walk this repository will not pay for. That result argues for alternative (d) or (e) — refusing to infer — and this proposal would return with that as its recommendation rather than a detection improvement.
 - **Result:** It supported proceeding, and the design derived from it was then falsified on a held-out set (E14, E15). The plan is preserved as written rather than rewritten, because what it asked and what it got are both part of the record.
 
-### Second experiment — pre-registered 2026-08-26, not yet run
+### Second experiment — pre-registered 2026-08-26, run 2026-08-27
 
 Full pre-registration, frozen before any subject is opened: [artifacts/experiments/0004-strategy-selection/PRE-REGISTRATION.md](../experiments/0004-strategy-selection/PRE-REGISTRATION.md).
 
@@ -114,6 +121,7 @@ Full pre-registration, frozen before any subject is opened: [artifacts/experimen
 - **Does not support proceeding:** neither class clears its own bar. That is a pre-registered outcome rather than a fallback: it returns this proposal to `explore` with the release objective unchanged and unmet, and leaves the `build` authorization open to withdrawal by the owner.
 - **Why the two bars differ, declared before the run:** a refusing strategy declines to produce the value an accuracy score is computed over. Scoring a refusal as a miss assumes the conclusion; scoring it as a hit makes refusing everything optimal. The harm ordering — `false-greenfield` worse than `false-recorded` worse than `refused` worse than `correct` — and both bars are fixed in the pre-registration for that reason, and no composite score is used. Weights chosen now would decide the outcome by arithmetic, and afterwards would be indistinguishable from weights chosen to produce it.
 - **What passing E19's falsifiers does not buy:** they are a disqualifying gate, never a scoring dimension (E21). E22 corrects the premise E21 argued from — only recursion bounded at depth 3 or deeper satisfies both, not bounded recursion generally — and the conclusion is unchanged by that correction.
+- **Result:** Neither of the two pre-registered proceeding conditions was met as a pair, and the outcome falls between them. Refusal cleared its bar twice (E25); inference cleared its bar not at all (E24). The pre-registration wrote a return to `explore` only for the case where *neither* class clears, so the case that occurred — exactly one class clearing, on bars that were not symmetric (E26) — has no pre-written disposition. It is decided in the Decision section below rather than by reading a clause written for a different result. The full record, including the raw per-subject outputs, is [artifacts/experiments/0004-strategy-selection/RESULTS.md](../experiments/0004-strategy-selection/RESULTS.md); it is preserved as run, and the environment artifact in E27 is bounded there rather than corrected retroactively.
 
 ## Portfolio
 
@@ -187,10 +195,99 @@ the evidence string was recorded as evidence and became a *criterion on the infe
 which is what an explanation defect is; it was not turned into a requirement on the implementation,
 because no implementation has been selected.
 
+### 2026-09-04 — the outcome is reopened, on the 2026-08-27 experiment result
+
+**Two dates, deliberately not merged.** The strategy-selection experiment ran and was recorded on
+**2026-08-27**; the record was merged to `main` the same day. The reconsideration below was made and
+recorded on **2026-09-04**, after the owner reviewed that result and directed the decision be
+reopened. No decision was taken on 2026-08-27 — that day produced evidence, not a decision, and the
+two are dated separately because collapsing them would backdate a decision onto the experiment that
+prompted it.
+
+**What triggered it.** The strategy-selection experiment executed once against frozen apparatus and
+frozen ground truth. Its result is not the one either pre-written proceeding condition describes:
+inference cleared its bar not at all, refusal cleared its bar twice, and the bars were not symmetric.
+
+**What changed in this document.** Evidence E23 through E29 were added, the second experiment plan
+gained a Result, and the **outcome changed from `build` to `explore`**. Nothing was removed. The
+2026-08-12 `build` rationale is preserved verbatim below the new one, as the 2026-08-12 entry
+preserved the `explore` rationale before it — a corrected record has to show what was corrected, and
+this is now the second time this proposal has reversed a conclusion on later evidence.
+
+**What did not change.** The **release objective is untouched**: prevent a repository with shipped
+work from being silently treated as `greenfield`. E23 makes it firmer than it has ever been — three
+false `greenfield` on unseen repositories, measured rather than inferred. What moved is the design
+direction, which the `build` rationale asserted was settled and which E29 shows is not.
+
+**Why the 2026-08-26 separation no longer holds.** That revision kept the outcome at `build` and
+separated *authorization of the objective* from *selection of a design*: the objective was
+authorized, the design was not. That separation was available only because the outcome stayed
+`build`. `SCOPE.md` ties authorization to that outcome and to nothing else — authorization is
+carried by the proposal reaching `build`, and a backlog item's provenance is the proposal path in
+its `evidence` list. So the distinction survives any amount of design uncertainty and does **not**
+survive the outcome moving. On 2026-08-26 the design was unresolved *inside* a live authorization;
+here the authorization itself lapses, because the rationale that produced it is falsified (E29) and
+no replacement rationale is available that the evidence supports. The objective remains worth
+pursuing and is no longer authorized as implementation work — those are now two different
+statements, where on 2026-08-26 they were one.
+
+**What was deliberately not done.** No seventh candidate was designed. Class I failing on a cost
+clause is a standing invitation to propose a cheaper inference candidate, and doing that in the same
+step as reading the result would derive a design from the data it would then be tested against —
+the error the first pre-registration exists to prevent, recurring a second time. Proposal 0006 was
+not decided despite E28 showing it affects thirteen of sixteen subjects. No backlog item was
+modified — including the four this outcome change affects under `SCOPE.md`, which are named in the
+Decision below together with the edit the convention requires and the reason it is not made here.
+
 ## Decision
 
-- **Outcome:** build
-- **Rationale (2026-08-12, superseding the `explore` rationale preserved below):** The experiment
+- **Outcome:** explore
+- **Rationale (2026-09-04, superseding the `build` rationale preserved below):** The `build`
+  outcome rested on a claim that is now falsified. It recorded the architectural question as settled
+  "in the direction of improving detection rather than abolishing it", and the only experiment to put
+  that question to held-out data supports **no** inference candidate under the bar written for
+  inference (E24), while supporting both refusal candidates under theirs (E25). A decision cannot
+  keep standing on a rationale its own experiment contradicts.
+  **`explore` rather than continuing with `build`,** because what `build` authorized — a correction,
+  with the design deliberately unnamed — now has no supported design to be derived from. The
+  surviving inference candidate failed this proposal's own cost kill criterion, whose trigger and
+  observer were written long before the experiment existed.
+  **`explore` rather than selecting refusal,** which is the reading this result most invites and does
+  not support. Two refusal candidates cleared the bar and the experiment separated neither (E25); the
+  clause that eliminated the surviving inference candidate was never applied to either of them (E26);
+  and one of the two never refused at all, leaving its defining behaviour unexercised (E27). Choosing
+  between them now would be choosing on a comparison the experiment did not make.
+  **`explore` rather than `defer`,** because the defect is confirmed and stronger than before (E23),
+  and the discriminating work is cheap and can be specified immediately.
+  **`explore` rather than `reject`,** because the objective is unchanged and unmet.
+  **What this decision does not do.** It does not select a strategy class. It does not rank the two
+  refusal candidates. It does not decide 0006 (E28). It does not authorize implementation of anything.
+- **RevisitWhen:** Not required at this outcome, and recorded anyway. Revisit when a symmetric
+  comparison exists — the same cost and dependency clauses applied to both classes — or when the
+  unexercised refusal behaviour in E27 has been tested, or when 0006 is decided, since E28 shows its
+  answer changes the correct label on thirteen of sixteen subjects and therefore what any candidate
+  is being scored against.
+- **Effect on the backlog — this outcome withdraws the authorization, and the required edits are
+  not made here.** [`artifacts/backlog/SCOPE.md`](../backlog/SCOPE.md) is explicit: *"If a revision
+  withdraws the authorization — an outcome moving off `build` — that is a **new decision**, and the
+  correct response is to mark the affected items `CANCELLED` with the revision cited as evidence,
+  deliberately, in an edit a reader can see."* Moving from `build` to `explore` is exactly that
+  transition, so the authorization is **withdrawn**, not merely "open to withdrawal". The affected
+  items are [FE-08](../backlog/items/FE-08.md), which carries 0004's authorization as the highest
+  item whose entire subtree the proposal authorizes, and its three stories
+  [ST-01](../backlog/items/ST-01.md) `COMPLETE`, [ST-02](../backlog/items/ST-02.md) `BLOCKED` and
+  [ST-03](../backlog/items/ST-03.md) `READY`.
+  **None of those four items is modified by this revision**, and their statuses are unchanged. The
+  owner's instruction authorized reopening this Decision and did not authorize backlog changes;
+  SCOPE.md also states that nothing propagates automatically, precisely so that one system cannot
+  silently overwrite the other's state. The convention is therefore **cited as it stands and left
+  unsatisfied**, rather than rewritten to fit this revision or enacted without authorization. **This
+  proposal and the backlog are inconsistent until the owner acts**, and that inconsistency is
+  recorded here rather than hidden: no mechanical check detects it, so a green gate run is not
+  evidence that it has been resolved.
+- **Decided:** 2026-09-04, on evidence recorded 2026-08-27. The previous outcome and its rationale
+  are preserved immediately below.
+- **Superseded rationale (`build`, 2026-08-12, which itself superseded the `explore` rationale preserved further below):** The experiment
   answered the question this proposal recorded as the blocker. One pre-registered candidate
   classified all five pre-registered subjects correctly at negligible cost with no dependency, and
   the two alternatives that looked most attractive were falsified rather than merely unpreferred —
