@@ -268,14 +268,22 @@ text said "four" and counted the completed ST-01; that was an error, corrected i
   commits to is expected to produce, and its re-entry is assessed against, the following. It names
   evidence outputs and the open questions they answer; it does not design the experiment or select a
   candidate, and the design is to be pre-registered before any subject is run.
-  1. `experiment-result` — a comparison of the two refusal candidates that applies the same cost and
-     dependency clauses to both strategy classes, which answers the asymmetry E26 records and is the
-     only thing that can separate the survivors E25 left unseparated.
-  2. `experiment-result` — an exercise of the refusal behaviour E27 records as never exercised (the
-     candidate that refused on none of sixteen subjects), including the three subjects whose
-     `UNAVAILABLE` verdicts came from the host's git `safe.directory` check, so the zero-`false-greenfield`
-     counts rest on all sixteen subjects rather than thirteen.
-  3. `observation` — the label set the comparison is scored against, recorded with the state of
+  1. `experiment-result` — a comparison of the surviving inference candidate against the surviving
+     refusal candidates under one set of cost and dependency clauses applied to all of them. It
+     answers the single gap E26 records (the deciding clause was applied only to inference), and is
+     the only output that can say whether refusal outperforms inference; E25 and E26 do not.
+     Whether it also separates the two refusal candidates from each other is not claimed here.
+  2. `experiment-result` — an exercise of refusal on inputs chosen to force the candidate that
+     refused on none of the sixteen subjects to refuse, so the Class II clause requiring a refusal
+     to name what the operator must pass and what was inconclusive is exercised rather than
+     satisfied vacuously. This is the first of the two separate gaps in E27.
+  3. `experiment-result` — a rerun of the git-evidence and content-shaped candidates on the three
+     subjects whose `UNAVAILABLE` verdicts came from the host's git `safe.directory` check, without
+     that environmental failure, so that those two candidates' zero-`false-greenfield` counts rest
+     on sixteen exercised subjects rather than thirteen. This is the second of the two separate
+     gaps in E27; it concerns only those two candidates, and the refusal candidate in item 2 ran on
+     those subjects already.
+  4. `observation` — the label set the comparison is scored against, recorded with the state of
      proposal 0006 at the time. 0006 is not decided here and is not an output of this cycle; E28 shows
      its answer changes the correct label on thirteen of sixteen subjects, so the evidence is only as
      assessable as that dependency is stated.
