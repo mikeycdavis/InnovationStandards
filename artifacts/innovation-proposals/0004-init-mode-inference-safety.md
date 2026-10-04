@@ -236,8 +236,10 @@ clause is a standing invitation to propose a cheaper inference candidate, and do
 step as reading the result would derive a design from the data it would then be tested against —
 the error the first pre-registration exists to prevent, recurring a second time. Proposal 0006 was
 not decided despite E28 showing it affects thirteen of sixteen subjects. No backlog item was
-modified — including the four this outcome change affects under `SCOPE.md`, which are named in the
-Decision below together with the edit the convention requires and the reason it is not made here.
+modified by that revision — including the three this outcome change affects under `SCOPE.md`, which
+are named in the Decision below together with the edit the convention requires. (The 2026-09-04
+text said "four" and counted the completed ST-01; that was an error, corrected in the Decision's
+2026-10-03 resolution note, and the 2026-09-04 revision text is otherwise left as written.)
 
 ## Decision
 
@@ -262,29 +264,57 @@ Decision below together with the edit the convention requires and the reason it 
   **`explore` rather than `reject`,** because the objective is unchanged and unmet.
   **What this decision does not do.** It does not select a strategy class. It does not rank the two
   refusal candidates. It does not decide 0006 (E28). It does not authorize implementation of anything.
-- **RevisitWhen:** Not required at this outcome, and recorded anyway. Revisit when a symmetric
-  comparison exists — the same cost and dependency clauses applied to both classes — or when the
-  unexercised refusal behaviour in E27 has been tested, or when 0006 is decided, since E28 shows its
-  answer changes the correct label on thirteen of sixteen subjects and therefore what any candidate
-  is being scored against.
-- **Effect on the backlog — this outcome withdraws the authorization, and the required edits are
-  not made here.** [`artifacts/backlog/SCOPE.md`](../backlog/SCOPE.md) is explicit: *"If a revision
-  withdraws the authorization — an outcome moving off `build` — that is a **new decision**, and the
-  correct response is to mark the affected items `CANCELLED` with the revision cited as evidence,
-  deliberately, in an edit a reader can see."* Moving from `build` to `explore` is exactly that
-  transition, so the authorization is **withdrawn**, not merely "open to withdrawal". The affected
-  items are [FE-08](../backlog/items/FE-08.md), which carries 0004's authorization as the highest
-  item whose entire subtree the proposal authorizes, and its three stories
-  [ST-01](../backlog/items/ST-01.md) `COMPLETE`, [ST-02](../backlog/items/ST-02.md) `BLOCKED` and
-  [ST-03](../backlog/items/ST-03.md) `READY`.
-  **None of those four items is modified by this revision**, and their statuses are unchanged. The
-  owner's instruction authorized reopening this Decision and did not authorize backlog changes;
-  SCOPE.md also states that nothing propagates automatically, precisely so that one system cannot
-  silently overwrite the other's state. The convention is therefore **cited as it stands and left
-  unsatisfied**, rather than rewritten to fit this revision or enacted without authorization. **This
-  proposal and the backlog are inconsistent until the owner acts**, and that inconsistency is
-  recorded here rather than hidden: no mechanical check detects it, so a green gate run is not
-  evidence that it has been resolved.
+- **Expected evidence (Standard 10 R4; vocabulary of Standard 2):** The `explore` cycle this outcome
+  commits to is expected to produce, and its re-entry is assessed against, the following. It names
+  evidence outputs and the open questions they answer; it does not design the experiment or select a
+  candidate, and the design is to be pre-registered before any subject is run.
+  1. `experiment-result` — a comparison of the surviving inference candidate against the surviving
+     refusal candidates under one set of cost and dependency clauses applied to all of them. It
+     answers the single gap E26 records (the deciding clause was applied only to inference), and is
+     the only output that can say whether refusal outperforms inference; E25 and E26 do not.
+     Whether it also separates the two refusal candidates from each other is not claimed here.
+  2. `experiment-result` — an exercise of refusal on inputs chosen to force the candidate that
+     refused on none of the sixteen subjects to refuse, so the Class II clause requiring a refusal
+     to name what the operator must pass and what was inconclusive is exercised rather than
+     satisfied vacuously. This is the first of the two separate gaps in E27.
+  3. `experiment-result` — a rerun of the git-evidence and content-shaped candidates on the three
+     subjects whose `UNAVAILABLE` verdicts came from the host's git `safe.directory` check, without
+     that environmental failure, so that those two candidates' zero-`false-greenfield` counts rest
+     on sixteen exercised subjects rather than thirteen. This is the second of the two separate
+     gaps in E27; it concerns only those two candidates, and the refusal candidate in item 2 ran on
+     those subjects already.
+  4. `observation` — the label set the comparison is scored against, recorded with the state of
+     proposal 0006 at the time. 0006 is not decided here and is not an output of this cycle; E28 shows
+     its answer changes the correct label on thirteen of sixteen subjects, so the evidence is only as
+     assessable as that dependency is stated.
+  New results enter the Evidence list as new entries citing these items; a `hypothesis` is promoted
+  only by a citation-backed level change, never by rewording.
+- **Effect on the backlog — this outcome withdraws the authorization; the cancellation set is
+  FE-08, ST-02 and ST-03, and ST-01 is excluded.** [`artifacts/backlog/SCOPE.md`](../backlog/SCOPE.md)
+  is explicit: *"If a revision withdraws the authorization — an outcome moving off `build` — that is
+  a **new decision**, and the correct response is to mark the affected items `CANCELLED` with the
+  revision cited as evidence, deliberately, in an edit a reader can see."* Moving from `build` to
+  `explore` is exactly that transition, so the authorization is **withdrawn**, not merely "open to
+  withdrawal". The items whose pending authorization is withdrawn, and which that convention
+  therefore requires to be marked `CANCELLED`, are [FE-08](../backlog/items/FE-08.md), which carries
+  0004's authorization as the highest item whose entire subtree the proposal authorizes, and its
+  stories [ST-02](../backlog/items/ST-02.md) (`BLOCKED`) and [ST-03](../backlog/items/ST-03.md)
+  (`READY`).
+  **[ST-01](../backlog/items/ST-01.md) is deliberately not in that set.** It is `COMPLETE`: it
+  records an experiment that was actually run and produced E15 through E18. `CANCELLED` withdraws
+  authorization that has not yet been exercised; applying it to ST-01 would rewrite a completed
+  experiment as an unperformed one and corrupt the implementation history. ST-01 stays `COMPLETE`,
+  and its results stay in this proposal's Evidence as they are.
+  **Resolution note, 2026-10-03.** The 2026-09-04 text of this bullet counted four affected items
+  including ST-01, said the edits were "not made here", and said this proposal and the backlog were
+  "inconsistent until the owner acts". That is corrected rather than left standing. On 2026-10-03 the
+  owner confirmed the reading: the outcome change is a **withdrawal of this proposal's authorization**,
+  and the earlier instruction to preserve ST-02 as `BLOCKED` is **explicitly lifted**, so ST-02 is
+  cancelled with the others. This revision does not execute the cancellations and does not edit any
+  backlog item; they are separate backlog edits that cite this proposal, and as of this note they have
+  not been made, so the backlog and this Decision still differ until they are. SCOPE.md states that
+  nothing propagates automatically, and no mechanical check detects the difference, so a green gate
+  run is not evidence that it has been resolved.
 - **Decided:** 2026-09-04, on evidence recorded 2026-08-27. The previous outcome and its rationale
   are preserved immediately below.
 - **Superseded rationale (`build`, 2026-08-12, which itself superseded the `explore` rationale preserved further below):** The experiment
