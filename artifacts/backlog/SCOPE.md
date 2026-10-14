@@ -104,8 +104,10 @@ dogfooding the artifact as it was built. They are genuine, and they are not mile
 | Not recorded | Post-v1.0.0 commits (see below); anything governed by a proposal |
 
 **Evidence is recorded as commit SHAs, not pull request URLs.** This repository began with direct
-commits to `main`. Its 14 merge commits (`git rev-list --merges --count origin/main`; newest #29
-`c8ef601`, #28 `3e4f682`, #12 `e7dd6a7`) all come after the v1.0.0 baseline `a75d532`.
+commits to `main`. When this was written, at `c8ef601` (2026-09-18), it had 14 merge commits
+(`git rev-list --merges --count c8ef601`; newest #29 `c8ef601`, #28 `3e4f682`, #12 `e7dd6a7`), all after
+the v1.0.0 baseline `a75d532`; later pull requests add more, so the count is a dated observation, not a
+current total.
 `backlog-reconcile`'s two PR-dependent checks need complete git history and read pull requests only
 from an item's Evidence section. Merge-commit subjects now exist, so they are no longer ruled out
 here, but this baseline cites SHAs, so they have no pull request to match. The checks that run on
