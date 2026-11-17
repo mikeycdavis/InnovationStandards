@@ -17,7 +17,7 @@
 | Configuration | YAML (strict hand-written subset parser) and JSON Schema (hand-written evaluator) |
 | Normative content | Markdown, with a parseable field grammar |
 | Diagrams | Mermaid; `.mmd` is canonical and the Markdown copy is derived |
-| CI | GitHub Actions, seven sequential checks |
+| CI | One pipeline, `ci/pipeline.mjs`: seven sequential checks run in Docker by `scripts/ci.sh`. `.github/workflows/ci.yml` runs that same script and restates nothing ([ADR 0006](../artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md)) |
 
 The zero-dependency constraint is structural rather than aspirational, and is recorded in
 [ADR 0001](../artifacts/adr/0001-vendored-engine-standalone-repo.md): a supply-chain compromise in a
@@ -40,13 +40,17 @@ flowchart TB
     subgraph authored["Normative layer (authored, human-reviewed)"]
         spec["artifacts/prompts/<br/>innovation-standards-spec.md<br/>numbered source of record"]
         docs14["standards/01..14-*.md<br/>14 normative documents"]
-        rules["rules/innovation.json<br/>29 catalogued rules"]
+        rules["rules/innovation.json<br/>30 catalogued rules"]
     end
 
-    subgraph gates["Integrity gates (CI, no verdict)"]
+    subgraph gates["Integrity gates (no verdict)"]
         inventory["inventory.mjs<br/>enumeration has not drifted"]
         fidelity["fidelity.mjs<br/>verbatim claims are verbatim"]
         diagrams["diagrams.mjs<br/>derived copies match source"]
+    end
+
+    subgraph localci["Local CI (Docker, authoritative)"]
+        pipeline["ci/pipeline.mjs<br/>7 checks: inventory, fidelity, policy,<br/>diagrams, unit-tests, audit, validate"]
     end
 
     subgraph subject["Subject of evaluation"]
@@ -68,6 +72,7 @@ flowchart TB
         init["standards init<br/>bootstrap, dry-run first"]
     end
 
+    pipeline -->|"runs all 7 checks, including these gates"| gates
     spec -->|"extracted and compared"| inventory
     spec -->|"quoted blocks verified"| fidelity
     docs14 -->|"each rule names a standard"| rules
@@ -145,8 +150,10 @@ it is a second implementation that agrees until it does not.
 | `artifacts/prompts/innovation-standards-spec.md` | The numbered source of record. Mechanically extractable; quoted blocks are verified against it |
 | `standards/01..14-*.md` | Fourteen normative documents. Each carries `## Scope`, `## Requirements` with `### RN — Title` headings, `## Additions this standard makes beyond the source`, `## Relationship to other standards`, and `## Implementation` |
 | `rules/innovation.json` | The rule catalog: thirty rules, each with an id, level, severity, validation type, assurance, and lifecycle fields |
-| `artifacts/adr/` | Five decision records |
+| `artifacts/adr/` | Six decision records, `0001`–`0006` |
 | `design/` | The concept-map investigation and the CLI design |
+| `artifacts/innovation-proposals/` | This repository's own proposals (`0001`–`0006`), evaluated by the same CLI it ships; see [Self-governance](#self-governance-the-repository-evaluates-itself) |
+| `artifacts/experiments/` | Pre-registered experiments behind proposal 0004 (mode detection, strategy selection): pre-registration, freeze, ground truth, results |
 
 The `### RN — Title` headings are load-bearing: findings carry `standardRef` anchors into them, and a
 test asserts every anchor resolves to a heading that exists.
@@ -158,6 +165,7 @@ test asserts every anchor resolves to a heading that exists.
 | `scripts/catalog.mjs` | Loads and validates every `rules/*.json`. Throws rather than loading partially — a partial catalog silently shrinks the denominator every score is computed over |
 | `scripts/compliance.mjs` | Turns findings plus policy into a verdict. Owns applicability, exceptions, attestations, and the five statuses |
 | `scripts/standards.mjs` | The CLI: repository walk, proposal parsing, detectors, rendering, exit codes |
+| `scripts/proposal.mjs` | The proposal vocabulary and parser: the closed outcome and evidence-level sets and the strict section and field grammar. Pure: no filesystem, no process, no policy |
 | `scripts/policy.mjs` | Validates `project-policy.yml` against the schema and reports compliance conditions such as an expired exception |
 | `scripts/yaml.mjs` | A strict YAML subset parser. No anchors, block scalars, flow collections, duplicate keys, or tabs — all hard errors |
 | `scripts/jsonschema.mjs` | A JSON Schema evaluator that throws on any keyword it does not implement, rather than ignoring it |
@@ -173,6 +181,43 @@ test asserts every anchor resolves to a heading that exists.
 
 These three ran green **before the first standard was written**, which is what makes them constraints
 on the normative content rather than a description of it added afterwards.
+
+## Local CI and verified submission
+
+The pipeline is defined exactly once, in `ci/pipeline.mjs`: `inventory`, `fidelity`, `policy`, `diagrams`,
+`unit-tests`, `audit`, `validate`, in that order, each an `npm run` script. `scripts/ci.sh` (and
+`scripts/ci.ps1`) runs it in an ephemeral Docker project built from `ci/Dockerfile` (node pinned by
+digest, no `.git`, no network), and `.github/workflows/ci.yml` runs the same script rather than
+restating the checks. `scripts/submit-pr.sh` / `submit-pr.ps1` push only the commit that passed. The
+latest machine-readable result record is `artifacts/local-ci/latest.json` (git-ignored, so a fresh checkout has none). The reasoning is in
+[ADR 0006](../artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md); the operating
+detail is in [`local-ci.md`](local-ci.md).
+
+## Bootstrap mode detection
+
+`standards init` first decides which situation it is in, through `detectMode` in `scripts/init.mjs`, and
+ships the decision with its evidence. The three modes are `greenfield`, `existing-with-proposals` and
+`undocumented-decisions`; `--mode` overrides the inference and is the only way a mode is
+`CONFIRMED_BY_OWNER`. Detection tests implementation markers (`src`, `package.json`, `go.mod` and similar)
+at the repository root only. **Known limit:** a project whose code sits one directory down reads as
+greenfield, and a repository with code markers and only prompt artifacts is classified as having recorded decisions.
+Both are recorded, with evidence, in proposals [0004](../artifacts/innovation-proposals/0004-init-mode-inference-safety.md) and
+[0006](../artifacts/innovation-proposals/0006-prompt-markers-are-not-recorded-decisions.md); the decisions
+there govern whether the code changes.
+
+## Self-governance: the repository evaluates itself
+
+This repository adopts its own standards. `project-policy.yml` applies them, `standards validate .` is the
+last CI check, and its own proposals under `artifacts/innovation-proposals/` are parsed by the same
+detectors as an adopter's. Experiments that a proposal depends on are pre-registered under
+`artifacts/experiments/` before their subjects are opened.
+
+## Work tracking
+
+Work items are GitHub Issues, not files. The legacy item files were migrated on 2026-09-18; the
+legacy-id to issue mapping is `artifacts/backlog/github-mapping.json`, hierarchy is expressed by
+sub-issue links and `level:` / `status:` labels, and `artifacts/backlog/SCOPE.md` states what the backlog
+records. See [`artifacts/backlog/README.md`](../artifacts/backlog/README.md).
 
 ## The three epistemic axes
 
@@ -362,11 +407,10 @@ Stated here rather than left to be discovered:
 
 ## Implementation status
 
-This document describes the architecture as designed and decided. Where a component is described above
-but not yet present in the repository, that is construction order rather than aspiration — the design
-records in `design/` and `artifacts/adr/` were written first on purpose, and the integrity gates were
-made to pass before any normative content existed so that they constrain what gets written rather than
-describing it after the fact.
+This document describes the repository as built at version 1.0.2: the fourteen standards, the thirty-rule
+catalog, the CLI, the integrity gates, the local Docker CI pipeline and the self-governing proposal and
+experiment records are all present. Anything this document describes as not covered, such as content
+adequacy or fabrication detection, is a stated limit rather than pending work.
 
 The honest reading of any run is the one the tool itself gives: the assurance breakdown and the
 framework-coverage number that ship beside every verdict say how much of this architecture is actually
