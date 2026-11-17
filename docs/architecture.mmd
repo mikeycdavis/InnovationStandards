@@ -2,13 +2,17 @@ flowchart TB
     subgraph authored["Normative layer (authored, human-reviewed)"]
         spec["artifacts/prompts/<br/>innovation-standards-spec.md<br/>numbered source of record"]
         docs14["standards/01..14-*.md<br/>14 normative documents"]
-        rules["rules/innovation.json<br/>29 catalogued rules"]
+        rules["rules/innovation.json<br/>30 catalogued rules"]
     end
 
-    subgraph gates["Integrity gates (CI, no verdict)"]
+    subgraph gates["Integrity gates (no verdict)"]
         inventory["inventory.mjs<br/>enumeration has not drifted"]
         fidelity["fidelity.mjs<br/>verbatim claims are verbatim"]
         diagrams["diagrams.mjs<br/>derived copies match source"]
+    end
+
+    subgraph localci["Local CI (Docker, authoritative)"]
+        pipeline["ci/pipeline.mjs<br/>7 checks: inventory, fidelity, policy,<br/>diagrams, unit-tests, audit, validate"]
     end
 
     subgraph subject["Subject of evaluation"]
@@ -30,6 +34,7 @@ flowchart TB
         init["standards init<br/>bootstrap, dry-run first"]
     end
 
+    pipeline -->|"runs every gate, then the CLI"| gates
     spec -->|"extracted and compared"| inventory
     spec -->|"quoted blocks verified"| fidelity
     docs14 -->|"each rule names a standard"| rules
