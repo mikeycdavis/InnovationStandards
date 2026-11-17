@@ -34,7 +34,7 @@ flowchart TB
         init["standards init<br/>bootstrap, dry-run first"]
     end
 
-    pipeline -->|"runs every gate, then the CLI"| gates
+    pipeline -->|"runs all 7 checks, including these gates"| gates
     spec -->|"extracted and compared"| inventory
     spec -->|"quoted blocks verified"| fidelity
     docs14 -->|"each rule names a standard"| rules

@@ -72,7 +72,7 @@ flowchart TB
         init["standards init<br/>bootstrap, dry-run first"]
     end
 
-    pipeline -->|"runs every gate, then the CLI"| gates
+    pipeline -->|"runs all 7 checks, including these gates"| gates
     spec -->|"extracted and compared"| inventory
     spec -->|"quoted blocks verified"| fidelity
     docs14 -->|"each rule names a standard"| rules
@@ -165,6 +165,7 @@ test asserts every anchor resolves to a heading that exists.
 | `scripts/catalog.mjs` | Loads and validates every `rules/*.json`. Throws rather than loading partially — a partial catalog silently shrinks the denominator every score is computed over |
 | `scripts/compliance.mjs` | Turns findings plus policy into a verdict. Owns applicability, exceptions, attestations, and the five statuses |
 | `scripts/standards.mjs` | The CLI: repository walk, proposal parsing, detectors, rendering, exit codes |
+| `scripts/proposal.mjs` | The proposal vocabulary and parser: the closed outcome and evidence-level sets and the strict section and field grammar. Pure: no filesystem, no process, no policy |
 | `scripts/policy.mjs` | Validates `project-policy.yml` against the schema and reports compliance conditions such as an expired exception |
 | `scripts/yaml.mjs` | A strict YAML subset parser. No anchors, block scalars, flow collections, duplicate keys, or tabs — all hard errors |
 | `scripts/jsonschema.mjs` | A JSON Schema evaluator that throws on any keyword it does not implement, rather than ignoring it |
@@ -188,7 +189,7 @@ The pipeline is defined exactly once, in `ci/pipeline.mjs`: `inventory`, `fideli
 `scripts/ci.ps1`) runs it in an ephemeral Docker project built from `ci/Dockerfile` (node pinned by
 digest, no `.git`, no network), and `.github/workflows/ci.yml` runs the same script rather than
 restating the checks. `scripts/submit-pr.sh` / `submit-pr.ps1` push only the commit that passed. The
-latest machine-readable result record is `artifacts/local-ci/latest.json`. The reasoning is in
+latest machine-readable result record is `artifacts/local-ci/latest.json` (git-ignored, so a fresh checkout has none). The reasoning is in
 [ADR 0006](../artifacts/adr/0006-local-docker-ci-is-the-authoritative-pipeline.md); the operating
 detail is in [`local-ci.md`](local-ci.md).
 
@@ -199,7 +200,7 @@ ships the decision with its evidence. The three modes are `greenfield`, `existin
 `undocumented-decisions`; `--mode` overrides the inference and is the only way a mode is
 `CONFIRMED_BY_OWNER`. Detection tests implementation markers (`src`, `package.json`, `go.mod` and similar)
 at the repository root only. **Known limit:** a project whose code sits one directory down reads as
-greenfield, and a repository holding only prompt artifacts is classified as having recorded decisions.
+greenfield, and a repository with code markers and only prompt artifacts is classified as having recorded decisions.
 Both are recorded, with evidence, in proposals [0004](../artifacts/innovation-proposals/0004-init-mode-inference-safety.md) and
 [0006](../artifacts/innovation-proposals/0006-prompt-markers-are-not-recorded-decisions.md); the decisions
 there govern whether the code changes.
